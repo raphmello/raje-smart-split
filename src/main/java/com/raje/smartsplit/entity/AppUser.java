@@ -20,7 +20,7 @@ public class AppUser {
     private Long id;
 
     @NotNull
-    private String name;
+    private String username;
 
     @NotNull
     private String password;
