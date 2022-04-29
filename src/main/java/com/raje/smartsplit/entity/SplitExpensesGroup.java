@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.List;
 
 @Entity
@@ -19,6 +20,14 @@ public class SplitExpensesGroup {
     private Long id;
 
     private String title;
+
+    private LocalDate creationDate;
+
+    @ManyToOne
+    private AppUser creator;
+
+    @ManyToMany(mappedBy = "splitExpensesGroups")
+    private List<AppUser> appUsers;
 
     @OneToMany(mappedBy = "splitExpensesGroup")
     private List<Bill> bills;

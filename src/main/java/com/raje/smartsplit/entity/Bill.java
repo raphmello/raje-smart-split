@@ -18,7 +18,7 @@ public class Bill {
     private Long id;
 
     @ManyToOne
-    private Participant participant;
+    private AppUser appUser;
 
     @ManyToOne
     private SplitExpensesGroup splitExpensesGroup;
