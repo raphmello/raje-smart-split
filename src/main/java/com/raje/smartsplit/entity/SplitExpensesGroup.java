@@ -26,8 +26,8 @@ public class SplitExpensesGroup {
     @ManyToOne
     private AppUser creator;
 
-    @ManyToMany(mappedBy = "splitExpensesGroups")
-    private List<AppUser> appUsers;
+    @OneToMany(mappedBy = "splitExpensesGroup")
+    private List<Participant> participants;
 
     @OneToMany(mappedBy = "splitExpensesGroup")
     private List<Bill> bills;

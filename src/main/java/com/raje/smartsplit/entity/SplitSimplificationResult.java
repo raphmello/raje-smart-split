@@ -7,27 +7,26 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.util.List;
 
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
-public class AppUser {
+public class SplitSimplificationResult {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @NotNull
-    private String name;
+    @ManyToOne
+    private SplitExpensesGroup splitExpensesGroup;
+
+    @ManyToOne
+    private AppUser debtor;
+
+    @ManyToOne
+    private AppUser creditor;
 
     @NotNull
-    private String password;
-
-    @OneToMany(mappedBy = "appUser")
-    private List<Bill> bills;
-
-    @ManyToMany
-    private List<SplitExpensesGroup> splitExpensesGroups;
+    private Double amount;
 }
