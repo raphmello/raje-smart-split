@@ -26,7 +26,7 @@ public class SplitExpensesGroup {
     private final LocalDate creationDate = LocalDate.now();
 
     @ManyToOne
-    private AppUser creator;
+    private User creator;
 
     @OneToMany(mappedBy = "splitExpensesGroup",fetch = FetchType.EAGER)
     private List<Participant> participants = new ArrayList<>();

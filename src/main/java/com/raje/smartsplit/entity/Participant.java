@@ -21,7 +21,7 @@ public class Participant {
     private SplitExpensesGroup splitExpensesGroup;
 
     @ManyToOne
-    private AppUser user;
+    private User user;
 
     private Double splitShare = 1.;
 
