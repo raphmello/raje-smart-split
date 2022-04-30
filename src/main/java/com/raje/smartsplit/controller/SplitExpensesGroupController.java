@@ -21,8 +21,8 @@ public class SplitExpensesGroupController {
         this.service = service;
     }
 
-    @GetMapping
-    public ResponseEntity<SplitExpensesGroupResponse> getGroup(@RequestParam Long groupId) {
+    @GetMapping("/{id}")
+    public ResponseEntity<SplitExpensesGroupResponse> getGroup(@PathVariable("id") Long groupId) {
         SplitExpensesGroupResponse response = service.getGroupById(groupId);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
