@@ -11,14 +11,14 @@ import lombok.Setter;
 public class BillResponse {
     private Long id;
 
-    private UserResponse appUser;
+    private UserResponse user;
 
     private Double amount;
 
     public BillResponse(Bill bill) {
         this.id = bill.getId();
-        this.appUser.setId(bill.getAppUser().getId());
-        this.appUser.setUsername(bill.getAppUser().getUsername());
+        this.user.setId(bill.getUser().getId());
+        this.user.setUsername(bill.getUser().getUsername());
         this.amount = bill.getAmount();
     }
 }

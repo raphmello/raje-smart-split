@@ -1,6 +1,6 @@
 package com.raje.smartsplit.controller;
 
-import com.raje.smartsplit.dto.request.CreateAppUserRequest;
+import com.raje.smartsplit.dto.request.CreateUserRequest;
 import com.raje.smartsplit.dto.response.UserResponse;
 import com.raje.smartsplit.entity.User;
 import com.raje.smartsplit.service.UserService;
@@ -43,8 +43,8 @@ public class UserController {
 
     @PostMapping
     @Operation(summary = "Create a user")
-    public ResponseEntity<UserResponse> createUser(@RequestBody @Valid CreateAppUserRequest request) {
-        UserResponse group = service.createAppUser(request);
+    public ResponseEntity<UserResponse> createUser(@RequestBody @Valid CreateUserRequest request) {
+        UserResponse group = service.createUser(request);
         return new ResponseEntity<>(group, HttpStatus.CREATED);
     }
 }

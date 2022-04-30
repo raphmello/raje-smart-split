@@ -27,7 +27,7 @@ public class SplitResult {
     private SplitExpensesGroup splitExpensesGroup;
 
     @ManyToOne
-    private AppUser splitParticipant;
+    private User splitParticipant;
 
     @NotNull
     private Double amount;

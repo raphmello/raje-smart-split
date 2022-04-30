@@ -22,10 +22,10 @@ public class SplitSimplificationResult {
     private SplitExpensesGroup splitExpensesGroup;
 
     @ManyToOne
-    private AppUser debtor;
+    private User debtor;
 
     @ManyToOne
-    private AppUser creditor;
+    private User creditor;
 
     @NotNull
     private Double amount;

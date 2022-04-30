@@ -46,17 +46,17 @@ public class SplitExpensesGroupService {
         throw new RuntimeException("Id not found.");
     }
 
-    public SplitExpensesGroupResponse addParticipant(User appUser, SplitExpensesGroup splitExpensesGroup) {
-        Participant participant = createParticipant(appUser, splitExpensesGroup);
+    public SplitExpensesGroupResponse addParticipant(User user, SplitExpensesGroup splitExpensesGroup) {
+        Participant participant = createParticipant(user, splitExpensesGroup);
         splitExpensesGroup.addParticipant(participant);
         SplitExpensesGroup entity = splitExpensesGroupRepository.save(splitExpensesGroup);
         return new SplitExpensesGroupResponse(entity);
     }
 
-    private Participant createParticipant(User appUser, SplitExpensesGroup splitExpensesGroup) {
+    private Participant createParticipant(User user, SplitExpensesGroup splitExpensesGroup) {
         Participant participant = new Participant();
-        participant.setUser(appUser);
-        if(userIsParticipatingInThisGroup(appUser, splitExpensesGroup)) {
+        participant.setUser(user);
+        if(userIsParticipatingInThisGroup(user, splitExpensesGroup)) {
             throw new RuntimeException("User is already in this group");
         }
         participant.setSplitExpensesGroup(splitExpensesGroup);
@@ -64,11 +64,11 @@ public class SplitExpensesGroupService {
         return participantRepository.save(participant);
     }
 
-    private boolean userIsParticipatingInThisGroup(User appUser, SplitExpensesGroup splitExpensesGroup) {
+    private boolean userIsParticipatingInThisGroup(User user, SplitExpensesGroup splitExpensesGroup) {
         Optional<Participant> optionalParticipant =
                 splitExpensesGroup.getParticipants()
                 .stream()
-                .filter(part -> part.getUser().getUsername().equals(appUser.getUsername())).findFirst();
+                .filter(part -> part.getUser().getUsername().equals(user.getUsername())).findFirst();
         return optionalParticipant.isPresent();
     }
 
