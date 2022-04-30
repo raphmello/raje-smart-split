@@ -7,6 +7,7 @@ import com.raje.smartsplit.entity.AppUser;
 import com.raje.smartsplit.repository.AppUserRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -31,5 +32,9 @@ public class AppUserService {
         if (optional.isEmpty())
             throw new RuntimeException("User not fount");
         return optional.get();
+    }
+
+    public List<AppUser> findAll() {
+        return repository.findAll();
     }
 }
