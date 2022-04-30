@@ -11,6 +11,7 @@ import javax.validation.constraints.NotNull;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Deprecated
 public class AppUserRequest {
     @NotNull
     private Long userId;
