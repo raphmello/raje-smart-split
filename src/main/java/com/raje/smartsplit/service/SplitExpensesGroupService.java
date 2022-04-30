@@ -56,9 +56,19 @@ public class SplitExpensesGroupService {
     private Participant createParticipant(AppUser appUser, SplitExpensesGroup splitExpensesGroup) {
         Participant participant = new Participant();
         participant.setUser(appUser);
-        //TODO validar se o usuário já faz parte do grupo
+        if(userIsParticipatingInThisGroup(appUser, splitExpensesGroup)) {
+            throw new RuntimeException("User is already in this group");
+        }
         participant.setSplitExpensesGroup(splitExpensesGroup);
         splitExpensesGroupRepository.save(splitExpensesGroup);
         return participantRepository.save(participant);
+    }
+
+    private boolean userIsParticipatingInThisGroup(AppUser appUser, SplitExpensesGroup splitExpensesGroup) {
+        Optional<Participant> optionalParticipant =
+                splitExpensesGroup.getParticipants()
+                .stream()
+                .filter(part -> part.getUser().getUsername().equals(appUser.getUsername())).findFirst();
+        return optionalParticipant.isPresent();
     }
 }
