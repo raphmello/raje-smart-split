@@ -4,6 +4,7 @@ import com.raje.smartsplit.dto.request.CreateAppUserRequest;
 import com.raje.smartsplit.dto.response.AppUserResponse;
 import com.raje.smartsplit.entity.AppUser;
 import com.raje.smartsplit.service.AppUserService;
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +25,7 @@ public class AppUserController {
     }
 
     @GetMapping
+    @Operation(summary = "Retreive all users")
     public ResponseEntity<List<AppUserResponse>> getAllUser() {
         List<AppUser> entityList = service.findAll();
         List<AppUserResponse> responseList = new ArrayList<>();
@@ -32,12 +34,14 @@ public class AppUserController {
     }
 
     @GetMapping("/{id}")
+    @Operation(summary = "Find user by id{id}")
     public ResponseEntity<AppUserResponse> getUser(@PathVariable("id") Long userId) {
         AppUser entity = service.getUserById(userId);
         return new ResponseEntity<>(new AppUserResponse(entity), HttpStatus.CREATED);
     }
 
     @PostMapping
+    @Operation(summary = "Create a user")
     public ResponseEntity<AppUserResponse> createUser(@RequestBody CreateAppUserRequest request) {
         AppUserResponse group = service.createAppUser(request);
         return new ResponseEntity<>(group, HttpStatus.CREATED);
