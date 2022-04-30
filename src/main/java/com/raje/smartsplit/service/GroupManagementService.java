@@ -1,6 +1,5 @@
 package com.raje.smartsplit.service;
 
-import com.raje.smartsplit.dto.request.AppUserRequest;
 import com.raje.smartsplit.dto.response.SplitExpensesGroupResponse;
 import com.raje.smartsplit.entity.AppUser;
 import com.raje.smartsplit.entity.SplitExpensesGroup;

@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,7 +45,7 @@ public class SplitExpensesGroupController {
 
     @PostMapping
     @Operation(summary = "Create a group and includes the creator as a participant")
-    public ResponseEntity<SplitExpensesGroupResponse> createGroup(@RequestBody CreateSplitExpensesGroupRequest request) {
+    public ResponseEntity<SplitExpensesGroupResponse> createGroup(@RequestBody @Valid CreateSplitExpensesGroupRequest request) {
         SplitExpensesGroup group = service.createGroup(request);
         return new ResponseEntity<>(new SplitExpensesGroupResponse(group), HttpStatus.CREATED);
     }

@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 @Getter
@@ -12,8 +14,9 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CreateSplitExpensesGroupRequest {
-    @NotNull
+    @NotBlank
     private String title;
     @NotNull
+    @Min(value = 1)
     private Long userId;
 }

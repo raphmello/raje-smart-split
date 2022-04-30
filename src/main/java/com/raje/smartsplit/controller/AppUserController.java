@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,7 +43,7 @@ public class AppUserController {
 
     @PostMapping
     @Operation(summary = "Create a user")
-    public ResponseEntity<AppUserResponse> createUser(@RequestBody CreateAppUserRequest request) {
+    public ResponseEntity<AppUserResponse> createUser(@RequestBody @Valid CreateAppUserRequest request) {
         AppUserResponse group = service.createAppUser(request);
         return new ResponseEntity<>(group, HttpStatus.CREATED);
     }
