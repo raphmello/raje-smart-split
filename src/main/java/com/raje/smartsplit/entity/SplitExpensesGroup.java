@@ -7,7 +7,9 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Entity
 @AllArgsConstructor
@@ -21,14 +23,28 @@ public class SplitExpensesGroup {
 
     private String title;
 
-    private LocalDate creationDate;
+    private final LocalDate creationDate = LocalDate.now();
 
     @ManyToOne
     private AppUser creator;
 
-    @OneToMany(mappedBy = "splitExpensesGroup")
-    private List<Participant> participants;
+    @OneToMany(mappedBy = "splitExpensesGroup",fetch = FetchType.EAGER)
+    private List<Participant> participants = new ArrayList<>();
 
     @OneToMany(mappedBy = "splitExpensesGroup")
-    private List<Bill> bills;
+    private List<Bill> bills = new ArrayList<>();
+
+    public void addParticipant(Participant participant) {
+        Optional<Participant> first = this.participants.stream()
+                .filter(p -> p.getUser().getUsername().equals(participant.getUser().getUsername()))
+                .findFirst();
+        if(first.isPresent())
+            throw new RuntimeException("User is already in this group.");
+
+        this.participants.add(participant);
+    }
+
+    public void addBill(Bill bill) {
+        this.bills.add(bill);
+    }
 }
