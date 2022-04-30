@@ -1,12 +1,15 @@
 package com.raje.smartsplit.controller;
 
-import com.raje.smartsplit.dto.request.AppUserRequest;
 import com.raje.smartsplit.dto.response.SplitExpensesGroupResponse;
 import com.raje.smartsplit.service.GroupManagementService;
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/groupManagement")
@@ -19,10 +22,11 @@ public class GroupManagementController {
         this.service = service;
     }
 
-    @PutMapping("/group/{id}")
-    public ResponseEntity<SplitExpensesGroupResponse> addParticipant(@RequestBody AppUserRequest user,
-                                                                     @PathVariable(value = "id") Long groupId) {
-        SplitExpensesGroupResponse groupUpdated = service.addParticipantToGroup(user,groupId);
+    @PostMapping("/group/{groupId}/user/{userId}")
+    @Operation(summary = "Add a user{userId} to the group{id}")
+    public ResponseEntity<SplitExpensesGroupResponse> addParticipant(@PathVariable(value = "groupId") Long groupId,
+                                                                     @PathVariable(value = "userId") Long userId) {
+        SplitExpensesGroupResponse groupUpdated = service.addParticipantToGroup(userId,groupId);
         return new ResponseEntity<>(groupUpdated, HttpStatus.CREATED);
     }
 }

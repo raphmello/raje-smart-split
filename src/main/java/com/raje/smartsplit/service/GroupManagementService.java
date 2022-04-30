@@ -25,8 +25,8 @@ public class GroupManagementService {
         this.groupService = groupService;
     }
 
-    public SplitExpensesGroupResponse addParticipantToGroup(AppUserRequest userRequest, Long groupId) {
-        Optional<AppUser> optionalUser = userRepository.findById(userRequest.getUserId());
+    public SplitExpensesGroupResponse addParticipantToGroup(Long userId, Long groupId) {
+        Optional<AppUser> optionalUser = userRepository.findById(userId);
         Optional<SplitExpensesGroup> optionalGroup = groupRepository.findById(groupId);
 
         if (optionalUser.isEmpty())
