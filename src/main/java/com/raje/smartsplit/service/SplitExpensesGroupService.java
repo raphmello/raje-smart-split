@@ -11,6 +11,7 @@ import com.raje.smartsplit.repository.SplitExpensesGroupRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -27,7 +28,7 @@ public class SplitExpensesGroupService {
         this.participantRepository = participantRepository;
     }
 
-    public SplitExpensesGroupResponse createGroup(CreateSplitExpensesGroupRequest request) {
+    public SplitExpensesGroup createGroup(CreateSplitExpensesGroupRequest request) {
         SplitExpensesGroup group = new SplitExpensesGroup();
         group.setTitle(request.getTitle());
         AppUser groupOwner = appUserService.getUserById(request.getUserId());
@@ -35,8 +36,7 @@ public class SplitExpensesGroupService {
 
         addParticipant(groupOwner, group);
 
-        SplitExpensesGroup entity = splitExpensesGroupRepository.save(group);
-        return new SplitExpensesGroupResponse(entity);
+        return splitExpensesGroupRepository.save(group);
     }
 
     public SplitExpensesGroupResponse getGroupById(Long groupId) {
@@ -70,5 +70,9 @@ public class SplitExpensesGroupService {
                 .stream()
                 .filter(part -> part.getUser().getUsername().equals(appUser.getUsername())).findFirst();
         return optionalParticipant.isPresent();
+    }
+
+    public List<SplitExpensesGroup> findAll() {
+        return splitExpensesGroupRepository.findAll();
     }
 }
