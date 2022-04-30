@@ -23,7 +23,7 @@ public class GroupManagementController {
     }
 
     @PostMapping("/group/{groupId}/user/{userId}")
-    @Operation(summary = "Add a user{userId} to the group{id}")
+    @Operation(summary = "Add a user{userId} to the group{groupId}")
     public ResponseEntity<SplitExpensesGroupResponse> addParticipant(@PathVariable(value = "groupId") Long groupId,
                                                                      @PathVariable(value = "userId") Long userId) {
         SplitExpensesGroupResponse groupUpdated = service.addParticipantToGroup(userId,groupId);
