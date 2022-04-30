@@ -2,6 +2,7 @@ package com.raje.smartsplit.controller;
 
 import com.raje.smartsplit.dto.request.CreateAppUserRequest;
 import com.raje.smartsplit.dto.response.AppUserResponse;
+import com.raje.smartsplit.entity.AppUser;
 import com.raje.smartsplit.service.AppUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,10 +20,10 @@ public class AppUserController {
         this.service = service;
     }
 
-    @GetMapping
-    public ResponseEntity<AppUserResponse> getUser(@RequestParam Long userId) {
-        AppUserResponse response = service.getUserById(userId);
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
+    @GetMapping("/{id}")
+    public ResponseEntity<AppUserResponse> getUser(@PathVariable("id") Long userId) {
+        AppUser entity = service.getUserById(userId);
+        return new ResponseEntity<>(new AppUserResponse(entity), HttpStatus.CREATED);
     }
 
     @PostMapping

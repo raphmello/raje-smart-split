@@ -26,10 +26,10 @@ public class AppUserService {
         return new AppUserResponse(savedUser);
     }
 
-    public AppUserResponse getUserById(Long userId) {
+    public AppUser getUserById(Long userId) {
         Optional<AppUser> optional = repository.findById(userId);
-        if (optional.isPresent())
-            return new AppUserResponse(optional.get());
-        throw new RuntimeException("Id not found.");
+        if (optional.isEmpty())
+            throw new RuntimeException("User not fount");
+        return optional.get();
     }
 }
