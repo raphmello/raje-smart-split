@@ -1,6 +1,6 @@
 package com.raje.smartsplit.service;
 
-import com.raje.smartsplit.dto.request.CreateUserRequest;
+import com.raje.smartsplit.dto.request.SignupRequest;
 import com.raje.smartsplit.dto.response.UserResponse;
 import com.raje.smartsplit.entity.User;
 import com.raje.smartsplit.repository.UserRepository;
@@ -18,7 +18,7 @@ public class UserService {
         this.repository = repository;
     }
 
-    public UserResponse createUser(CreateUserRequest request) {
+    public UserResponse createUser(SignupRequest request) {
         User user = new User();
         user.setUsername(request.getUsername());
         user.setPassword(request.getPassword());
