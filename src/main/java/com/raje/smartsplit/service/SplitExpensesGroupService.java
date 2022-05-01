@@ -1,5 +1,6 @@
 package com.raje.smartsplit.service;
 
+import com.raje.smartsplit.config.SecurityConfig.JwtUtils;
 import com.raje.smartsplit.dto.request.CreateSplitExpensesGroupRequest;
 import com.raje.smartsplit.dto.response.SplitExpensesGroupResponse;
 import com.raje.smartsplit.entity.Participant;
@@ -11,6 +12,7 @@ import com.raje.smartsplit.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,21 +22,29 @@ public class SplitExpensesGroupService {
     private final SplitExpensesGroupRepository splitExpensesGroupRepository;
     private final UserService userService;
     private final ParticipantRepository participantRepository;
+    private final JwtUtils jwtUtils;
 
     @Autowired
-    public SplitExpensesGroupService(SplitExpensesGroupRepository splitExpensesGroupRepository, UserRepository userRepository, UserService userService, ParticipantRepository participantRepository) {
+    public SplitExpensesGroupService(SplitExpensesGroupRepository splitExpensesGroupRepository, UserRepository userRepository, UserService userService, ParticipantRepository participantRepository, JwtUtils jwtUtils) {
         this.splitExpensesGroupRepository = splitExpensesGroupRepository;
         this.userService = userService;
         this.participantRepository = participantRepository;
+        this.jwtUtils = jwtUtils;
     }
 
+    @Transactional
     public SplitExpensesGroup createGroup(CreateSplitExpensesGroupRequest request) {
         SplitExpensesGroup group = new SplitExpensesGroup();
         group.setTitle(request.getTitle());
-        User groupOwner = userService.getUserById(request.getUserId());
+        Optional<User> currentUser = jwtUtils.getUserFromContext();
+
+        if (currentUser.isEmpty())
+            throw new RuntimeException("User not found");
+
+        User groupOwner = userService.getUserById(currentUser.get().getId());
         group.setCreator(groupOwner);
 
-        addParticipant(groupOwner, group);
+        addParticipantToGroup(groupOwner, group);
 
         return splitExpensesGroupRepository.save(group);
     }
@@ -46,30 +56,19 @@ public class SplitExpensesGroupService {
         throw new RuntimeException("Id not found.");
     }
 
-    public SplitExpensesGroupResponse addParticipant(User user, SplitExpensesGroup splitExpensesGroup) {
-        Participant participant = createParticipant(user, splitExpensesGroup);
-        splitExpensesGroup.addParticipant(participant);
-        SplitExpensesGroup entity = splitExpensesGroupRepository.save(splitExpensesGroup);
+    public SplitExpensesGroupResponse addParticipantToGroup(User user, SplitExpensesGroup splitExpensesGroup) {
+        SplitExpensesGroup entity = addParticipant(user, splitExpensesGroup);
         return new SplitExpensesGroupResponse(entity);
     }
 
-    private Participant createParticipant(User user, SplitExpensesGroup splitExpensesGroup) {
+    private SplitExpensesGroup addParticipant(User user, SplitExpensesGroup splitExpensesGroup) {
         Participant participant = new Participant();
         participant.setUser(user);
-        if(userIsParticipatingInThisGroup(user, splitExpensesGroup)) {
-            throw new RuntimeException("User is already in this group");
-        }
+        splitExpensesGroup.addParticipant(participant);
         participant.setSplitExpensesGroup(splitExpensesGroup);
-        splitExpensesGroupRepository.save(splitExpensesGroup);
-        return participantRepository.save(participant);
-    }
-
-    private boolean userIsParticipatingInThisGroup(User user, SplitExpensesGroup splitExpensesGroup) {
-        Optional<Participant> optionalParticipant =
-                splitExpensesGroup.getParticipants()
-                .stream()
-                .filter(part -> part.getUser().getUsername().equals(user.getUsername())).findFirst();
-        return optionalParticipant.isPresent();
+        participantRepository.save(participant);
+        SplitExpensesGroup updatedGroup = splitExpensesGroupRepository.save(splitExpensesGroup);
+        return updatedGroup;
     }
 
     public List<SplitExpensesGroup> findAll() {

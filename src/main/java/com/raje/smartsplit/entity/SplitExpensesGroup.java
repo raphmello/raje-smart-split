@@ -36,7 +36,7 @@ public class SplitExpensesGroup {
 
     public void addParticipant(Participant participant) {
         Optional<Participant> first = this.participants.stream()
-                .filter(p -> p.getUser().getUsername().equals(participant.getUser().getUsername()))
+                .filter(p -> p.equals(participant))
                 .findFirst();
         if(first.isPresent())
             throw new RuntimeException("User is already in this group.");
