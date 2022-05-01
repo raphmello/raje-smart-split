@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -32,6 +33,7 @@ public class GroupManagementController {
 
     @GetMapping
     @Operation(summary = "Retreive all groups (only id and name, not bills and participants)")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<SplitExpensesGroupSimpleResponse>> getAllGroups() {
         List<SplitExpensesGroup> entityList = groupService.findAll();
         List<SplitExpensesGroupSimpleResponse> responseList = new ArrayList<>();
@@ -53,11 +55,10 @@ public class GroupManagementController {
         return new ResponseEntity<>(new SplitExpensesGroupResponse(group), HttpStatus.CREATED);
     }
 
-    @PostMapping("/{groupId}/user/{userId}")
-    @Operation(summary = "Add a user{userId} to the group{groupId}")
-    public ResponseEntity<SplitExpensesGroupResponse> addParticipantToGroup(@PathVariable(value = "groupId") Long groupId,
-                                                                     @PathVariable(value = "userId") Long userId) {
-        SplitExpensesGroupResponse groupUpdated = groupManagementService.addParticipantToGroup(userId,groupId);
+    @PostMapping("/{id}/enter")
+    @Operation(summary = "Enter the group{id}")
+    public ResponseEntity<SplitExpensesGroupResponse> enterTheGroupById(@PathVariable(value = "id") Long groupId) {
+        SplitExpensesGroupResponse groupUpdated = groupManagementService.participateInTheGroup(groupId);
         return new ResponseEntity<>(groupUpdated, HttpStatus.CREATED);
     }
 }
