@@ -1,6 +1,8 @@
 package com.raje.smartsplit.config.SecurityConfig;
 
+import com.raje.smartsplit.entity.User;
 import com.raje.smartsplit.entity.UserDetailsImpl;
+import com.raje.smartsplit.repository.UserRepository;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
@@ -9,11 +11,15 @@ import io.jsonwebtoken.SignatureException;
 import io.jsonwebtoken.UnsupportedJwtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
+import java.util.Optional;
 
 @Component
 public class JwtUtils {
@@ -22,6 +28,9 @@ public class JwtUtils {
     private String jwtSecret;
     @Value("${smartsplit.app.jwtExpirationMs}")
     private int jwtExpirationMs;
+    @Autowired
+    private UserRepository userRepository;
+
     public String generateJwtToken(Authentication authentication) {
         UserDetailsImpl userPrincipal = (UserDetailsImpl) authentication.getPrincipal();
         return Jwts.builder()
@@ -50,5 +59,10 @@ public class JwtUtils {
             logger.error("JWT claims string is empty: {}", e.getMessage());
         }
         return false;
+    }
+
+    public Optional<User> getUserFromContext() {
+        UserDetails principal = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return userRepository.findByUsername(principal.getUsername());
     }
 }
