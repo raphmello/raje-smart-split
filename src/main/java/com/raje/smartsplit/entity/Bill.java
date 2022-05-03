@@ -1,11 +1,14 @@
 package com.raje.smartsplit.entity;
 
+import com.raje.smartsplit.enums.CategoryEnum;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @Entity
 @Getter
@@ -17,11 +20,20 @@ public class Bill {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @NotNull
+    private String description;
+
+    @Enumerated(EnumType.STRING)
+    private CategoryEnum category = CategoryEnum.GENERAL;
+
     @ManyToOne
+    @NotNull
     private User user;
 
     @ManyToOne
-    private SplitExpensesGroup splitExpensesGroup;
+    @NotNull
+    private Participant participant;
 
+    @NotNull
     private Double amount;
 }

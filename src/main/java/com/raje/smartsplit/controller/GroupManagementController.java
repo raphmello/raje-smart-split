@@ -1,5 +1,6 @@
 package com.raje.smartsplit.controller;
 
+import com.raje.smartsplit.dto.request.CreateBillRequest;
 import com.raje.smartsplit.dto.request.CreateSplitExpensesGroupRequest;
 import com.raje.smartsplit.dto.response.SplitExpensesGroupResponse;
 import com.raje.smartsplit.dto.response.SplitExpensesGroupSimpleResponse;
@@ -59,6 +60,14 @@ public class GroupManagementController {
     @Operation(summary = "Enter the group{id}")
     public ResponseEntity<SplitExpensesGroupResponse> enterTheGroupById(@PathVariable(value = "id") Long groupId) {
         SplitExpensesGroupResponse groupUpdated = groupManagementService.participateInTheGroup(groupId);
+        return new ResponseEntity<>(groupUpdated, HttpStatus.CREATED);
+    }
+
+    @PostMapping("/{id}/bill")
+    @Operation(summary = "Enter the group{id}")
+    public ResponseEntity<SplitExpensesGroupResponse> addBillToTheGroupId(@PathVariable(value = "id") Long groupId,
+                                                                          @RequestBody @Valid CreateBillRequest billRequest) {
+        SplitExpensesGroupResponse groupUpdated = groupManagementService.addBillToParticipant(groupId, billRequest);
         return new ResponseEntity<>(groupUpdated, HttpStatus.CREATED);
     }
 }
