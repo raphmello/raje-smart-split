@@ -8,7 +8,6 @@ import com.raje.smartsplit.entity.Participant;
 import com.raje.smartsplit.entity.SplitExpensesGroup;
 import com.raje.smartsplit.entity.User;
 import com.raje.smartsplit.repository.BillRepository;
-import com.raje.smartsplit.repository.ParticipantRepository;
 import com.raje.smartsplit.repository.SplitExpensesGroupRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
