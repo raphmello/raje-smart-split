@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -24,6 +26,9 @@ public class Participant {
     @ManyToOne
     private User user;
 
+    @OneToMany(mappedBy = "participant")
+    private List<Bill> bills = new ArrayList<>();
+
     private Double splitShare = 1.;
 
     @Override
@@ -41,5 +46,9 @@ public class Participant {
         int result = splitExpensesGroup != null ? splitExpensesGroup.hashCode() : 0;
         result = 31 * result + (user != null ? user.hashCode() : 0);
         return result;
+    }
+
+    public void addBill(Bill bill) {
+        this.bills.add(bill);
     }
 }

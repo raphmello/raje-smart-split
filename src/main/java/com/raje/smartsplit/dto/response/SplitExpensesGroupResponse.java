@@ -1,11 +1,11 @@
 package com.raje.smartsplit.dto.response;
 
-import com.raje.smartsplit.entity.Participant;
 import com.raje.smartsplit.entity.SplitExpensesGroup;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,16 +15,15 @@ import java.util.List;
 public class SplitExpensesGroupResponse {
     private Long id;
     private String title;
-    private List<BillResponse> bills;
+    private LocalDate creationDate;
+    private UserResponse creator;
     private List<ParticipantResponse> participants;
 
     public SplitExpensesGroupResponse(SplitExpensesGroup entity) {
         this.id = entity.getId();
         this.title = entity.getTitle();
-
-        this.bills = new ArrayList<>();
-        entity.getBills().forEach(bill -> bills.add(new BillResponse(bill)));
-
+        this.creationDate = entity.getCreationDate();
+        this.creator = new UserResponse(entity.getCreator());
         this.participants = new ArrayList<>();
         entity.getParticipants().forEach(participant -> participants.add(new ParticipantResponse(participant)));
     }

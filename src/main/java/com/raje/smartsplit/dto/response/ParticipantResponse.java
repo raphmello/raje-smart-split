@@ -1,9 +1,13 @@
 package com.raje.smartsplit.dto.response;
 
+import com.raje.smartsplit.entity.Bill;
 import com.raje.smartsplit.entity.Participant;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -15,9 +19,12 @@ public class ParticipantResponse {
 
     private Double splitShare;
 
+    private List<BillResponse> bills = new ArrayList<>();
+
     public ParticipantResponse(Participant participant) {
         this.id = participant.getId();
         this.user = new UserResponse(participant.getUser());
         this.splitShare = participant.getSplitShare();
+        participant.getBills().forEach(bill -> bills.add(new BillResponse(bill)));
     }
 }

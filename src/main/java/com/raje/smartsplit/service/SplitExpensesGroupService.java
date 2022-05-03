@@ -36,12 +36,9 @@ public class SplitExpensesGroupService {
     public SplitExpensesGroup createGroup(CreateSplitExpensesGroupRequest request) {
         SplitExpensesGroup group = new SplitExpensesGroup();
         group.setTitle(request.getTitle());
-        Optional<User> currentUser = jwtUtils.getUserFromContext();
+        User currentUser = jwtUtils.getUserFromContext();
 
-        if (currentUser.isEmpty())
-            throw new RuntimeException("User not found");
-
-        User groupOwner = userService.getUserById(currentUser.get().getId());
+        User groupOwner = userService.getUserById(currentUser.getId());
         group.setCreator(groupOwner);
 
         addParticipantToGroup(groupOwner, group);
@@ -64,8 +61,8 @@ public class SplitExpensesGroupService {
     private SplitExpensesGroup addParticipant(User user, SplitExpensesGroup splitExpensesGroup) {
         Participant participant = new Participant();
         participant.setUser(user);
-        splitExpensesGroup.addParticipant(participant);
         participant.setSplitExpensesGroup(splitExpensesGroup);
+        splitExpensesGroup.addParticipant(participant);
         participantRepository.save(participant);
         SplitExpensesGroup updatedGroup = splitExpensesGroupRepository.save(splitExpensesGroup);
         return updatedGroup;

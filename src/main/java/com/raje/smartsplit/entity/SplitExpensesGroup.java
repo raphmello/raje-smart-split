@@ -29,10 +29,7 @@ public class SplitExpensesGroup {
     private User creator;
 
     @OneToMany(mappedBy = "splitExpensesGroup",fetch = FetchType.EAGER)
-    private List<Participant> participants = new ArrayList<>();
-
-    @OneToMany(mappedBy = "splitExpensesGroup")
-    private List<Bill> bills = new ArrayList<>();
+    private List<Participant> participants = new ArrayList<>(); //TODO COLOCAR BILLS DENTRO DE PARTICIPANTS
 
     public void addParticipant(Participant participant) {
         Optional<Participant> first = this.participants.stream()
@@ -42,9 +39,5 @@ public class SplitExpensesGroup {
             throw new RuntimeException("User is already in this group.");
 
         this.participants.add(participant);
-    }
-
-    public void addBill(Bill bill) {
-        this.bills.add(bill);
     }
 }
