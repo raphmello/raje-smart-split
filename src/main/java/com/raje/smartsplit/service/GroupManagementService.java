@@ -20,17 +20,16 @@ import java.util.Optional;
 public class GroupManagementService {
 
     private final BillRepository billRepository;
-    private final ParticipantRepository participantRepository;
     private final SplitExpensesGroupRepository groupRepository;
     private final SplitExpensesGroupService groupService;
     private final JwtUtils jwtUtils;
 
     @Autowired
-    public GroupManagementService(BillRepository billRepository, ParticipantRepository participantRepository, SplitExpensesGroupService groupService,
+    public GroupManagementService(BillRepository billRepository,
+                                  SplitExpensesGroupService groupService,
                                   SplitExpensesGroupRepository groupRepository,
                                   JwtUtils jwtUtils) {
         this.billRepository = billRepository;
-        this.participantRepository = participantRepository;
         this.groupRepository = groupRepository;
         this.groupService = groupService;
         this.jwtUtils = jwtUtils;
