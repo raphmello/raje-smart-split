@@ -1,6 +1,7 @@
 package com.raje.smartsplit.enums;
 
 public enum CategoryEnum {
+    GENERAL("Geral"),
     MEAT("Carne"),
     BEER("Cerveja"),
     ALCOHOLIC_DRINK("Bebida alcoólica"),
