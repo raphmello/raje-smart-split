@@ -33,38 +33,47 @@ public class GroupManagementController {
     }
 
     @GetMapping
-    @Operation(summary = "Retreive all groups (only id and name, not bills and participants)")
+    @Operation(summary = "Retreive all groups (only id and name, not bills and participants) [ONLY ADMIN]")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<SplitExpensesGroupSimpleResponse>> getAllGroups() {
         List<SplitExpensesGroup> entityList = groupService.findAll();
         List<SplitExpensesGroupSimpleResponse> responseList = new ArrayList<>();
         entityList.forEach(group -> responseList.add(new SplitExpensesGroupSimpleResponse(group)));
-        return new ResponseEntity<>(responseList, HttpStatus.CREATED);
+        return new ResponseEntity<>(responseList, HttpStatus.OK);
     }
 
-    @GetMapping("/{id}")
-    @Operation(summary = "Find a group by id (includes all bills and participants)")
+    @GetMapping("/currentUser")
+    @Operation(summary = "Retreive all groups from current user (only id and name, not bills and participants)")
+    public ResponseEntity<List<SplitExpensesGroupSimpleResponse>> getAllGroupsFromCurrentUser() {
+        List<SplitExpensesGroup> entityList = groupService.findAllGroupsByUsername();
+        List<SplitExpensesGroupSimpleResponse> responseList = new ArrayList<>();
+        entityList.forEach(group -> responseList.add(new SplitExpensesGroupSimpleResponse(group)));
+        return new ResponseEntity<>(responseList, HttpStatus.OK);
+    }
+
+    @GetMapping("/{id}/currentUser")
+    @Operation(summary = "Retrieve a group by id that current user is included (includes all bills and participants)")
     public ResponseEntity<SplitExpensesGroupResponse> getGroup(@PathVariable("id") Long groupId) {
-        SplitExpensesGroupResponse response = groupService.getGroupById(groupId);
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
+        SplitExpensesGroupResponse response = groupService.getGroupByIdAndCurrentUser(groupId);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @PostMapping
+    @PostMapping("/currentUser")
     @Operation(summary = "Create a group and includes the creator as a participant")
     public ResponseEntity<SplitExpensesGroupResponse> createGroup(@RequestBody @Valid CreateSplitExpensesGroupRequest request) {
         SplitExpensesGroup group = groupService.createGroup(request);
         return new ResponseEntity<>(new SplitExpensesGroupResponse(group), HttpStatus.CREATED);
     }
 
-    @PostMapping("/{id}/enter")
+    @PostMapping("/{id}/currentUser/enter")
     @Operation(summary = "Enter the group{id}")
     public ResponseEntity<SplitExpensesGroupResponse> enterTheGroupById(@PathVariable(value = "id") Long groupId) {
         SplitExpensesGroupResponse groupUpdated = groupManagementService.participateInTheGroup(groupId);
         return new ResponseEntity<>(groupUpdated, HttpStatus.CREATED);
     }
 
-    @PostMapping("/{id}/bill")
-    @Operation(summary = "Enter the group{id}")
+    @PostMapping("/{id}/currentUser/addBill")
+    @Operation(summary = "Add new bill to group{id}")
     public ResponseEntity<SplitExpensesGroupResponse> addBillToTheGroupId(@PathVariable(value = "id") Long groupId,
                                                                           @RequestBody @Valid CreateBillRequest billRequest) {
         SplitExpensesGroupResponse groupUpdated = groupManagementService.addBillToParticipant(groupId, billRequest);
