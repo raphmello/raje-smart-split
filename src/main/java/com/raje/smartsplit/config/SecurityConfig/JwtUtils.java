@@ -3,12 +3,7 @@ package com.raje.smartsplit.config.SecurityConfig;
 import com.raje.smartsplit.entity.User;
 import com.raje.smartsplit.entity.UserDetailsImpl;
 import com.raje.smartsplit.repository.UserRepository;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.MalformedJwtException;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.SignatureException;
-import io.jsonwebtoken.UnsupportedJwtException;
+import io.jsonwebtoken.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,8 +56,11 @@ public class JwtUtils {
         return false;
     }
 
-    public Optional<User> getUserFromContext() {
+    public User getUserFromContext() {
         UserDetails principal = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return userRepository.findByUsername(principal.getUsername());
+        Optional<User> optional = userRepository.findByUsername(principal.getUsername());
+        if(optional.isEmpty())
+            throw new RuntimeException("User not found.");
+        return optional.get();
     }
 }
