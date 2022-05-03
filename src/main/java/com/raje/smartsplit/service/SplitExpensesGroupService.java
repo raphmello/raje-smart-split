@@ -46,11 +46,10 @@ public class SplitExpensesGroupService {
         return splitExpensesGroupRepository.save(group);
     }
 
-    public SplitExpensesGroupResponse getGroupById(Long groupId) {
-        Optional<SplitExpensesGroup> optional = splitExpensesGroupRepository.findById(groupId);
-        if (optional.isPresent())
-            return new SplitExpensesGroupResponse(optional.get());
-        throw new RuntimeException("Id not found.");
+    public SplitExpensesGroupResponse getGroupByIdAndCurrentUser(Long groupId) {
+        Long userId = jwtUtils.getUserFromContext().getId();
+        Optional<SplitExpensesGroup> optional = splitExpensesGroupRepository.findByGroupIdAndUserId(groupId, userId);
+        return optional.map(SplitExpensesGroupResponse::new).orElse(null);
     }
 
     public SplitExpensesGroupResponse addParticipantToGroup(User user, SplitExpensesGroup splitExpensesGroup) {
@@ -70,5 +69,10 @@ public class SplitExpensesGroupService {
 
     public List<SplitExpensesGroup> findAll() {
         return splitExpensesGroupRepository.findAll();
+    }
+
+    public List<SplitExpensesGroup> findAllGroupsByUsername() {
+        Long id = jwtUtils.getUserFromContext().getId();
+        return splitExpensesGroupRepository.findByUserId(id);
     }
 }
