@@ -19,7 +19,7 @@ public class SplitSimplificationResult {
     private Long id;
 
     @ManyToOne
-    private SplitExpensesGroup splitExpensesGroup;
+    private SplitGroup splitGroup;
 
     @ManyToOne
     private User debtor;

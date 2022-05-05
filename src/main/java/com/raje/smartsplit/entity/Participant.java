@@ -21,7 +21,7 @@ public class Participant {
     private Long id;
 
     @ManyToOne
-    private SplitExpensesGroup splitExpensesGroup;
+    private SplitGroup splitGroup;
 
     @ManyToOne
     private User user;
@@ -43,7 +43,7 @@ public class Participant {
 
     @Override
     public int hashCode() {
-        int result = splitExpensesGroup != null ? splitExpensesGroup.hashCode() : 0;
+        int result = splitGroup != null ? splitGroup.hashCode() : 0;
         result = 31 * result + (user != null ? user.hashCode() : 0);
         return result;
     }

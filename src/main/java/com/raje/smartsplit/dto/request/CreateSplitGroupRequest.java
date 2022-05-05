@@ -11,7 +11,7 @@ import javax.validation.constraints.NotBlank;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class CreateSplitExpensesGroupRequest {
+public class CreateSplitGroupRequest {
     @NotBlank
     private String title;
 }

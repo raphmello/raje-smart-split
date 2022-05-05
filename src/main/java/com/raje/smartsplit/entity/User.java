@@ -47,7 +47,7 @@ public class User {
     private List<Bill> bills;
 
     @ManyToMany
-    private List<SplitExpensesGroup> splitExpensesGroups;
+    private List<SplitGroup> splitGroups;
 
     public User() {
     }

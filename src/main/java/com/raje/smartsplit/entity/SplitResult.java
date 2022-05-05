@@ -24,7 +24,7 @@ public class SplitResult {
     private ECategory category;
 
     @ManyToOne
-    private SplitExpensesGroup splitExpensesGroup;
+    private SplitGroup splitGroup;
 
     @ManyToOne
     private User splitParticipant;

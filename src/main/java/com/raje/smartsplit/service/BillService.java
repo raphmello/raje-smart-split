@@ -2,7 +2,6 @@ package com.raje.smartsplit.service;
 
 import com.raje.smartsplit.entity.Bill;
 import com.raje.smartsplit.repository.BillRepository;
-import com.raje.smartsplit.repository.ParticipantRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +18,6 @@ public class BillService {
     }
 
     public List<Bill> findBillsByGroupId(Long groupId) {
-        return repository.findBySplitExpensesGroup(groupId);
+        return repository.findBySplitGroup(groupId);
     }
 }

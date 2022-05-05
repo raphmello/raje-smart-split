@@ -16,7 +16,7 @@ import java.util.Optional;
 @NoArgsConstructor
 @Getter
 @Setter
-public class SplitExpensesGroup {
+public class SplitGroup {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -28,8 +28,8 @@ public class SplitExpensesGroup {
     @ManyToOne
     private User creator;
 
-    @OneToMany(mappedBy = "splitExpensesGroup",fetch = FetchType.EAGER)
-    private List<Participant> participants = new ArrayList<>(); //TODO COLOCAR BILLS DENTRO DE PARTICIPANTS
+    @OneToMany(mappedBy = "splitGroup",fetch = FetchType.EAGER)
+    private List<Participant> participants = new ArrayList<>();
 
     public void addParticipant(Participant participant) {
         Optional<Participant> first = this.participants.stream()

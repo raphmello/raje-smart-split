@@ -9,6 +9,6 @@ import java.util.List;
 
 @Repository
 public interface BillRepository extends JpaRepository<Bill, Long> {
-    @Query(value = "SELECT * FROM bill b WHERE b.split_expenses_group_id = :groupId", nativeQuery = true)
-    List<Bill> findBySplitExpensesGroup(Long groupId);
+    @Query(value = "SELECT * FROM smartsplit.public.bill b WHERE b.split_group_id = :groupId", nativeQuery = true)
+    List<Bill> findBySplitGroup(Long groupId);
 }
