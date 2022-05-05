@@ -1,7 +1,7 @@
 package com.raje.smartsplit.entity;
 
-import com.raje.smartsplit.enums.CategoryEnum;
-import com.raje.smartsplit.enums.DebtTypeEnum;
+import com.raje.smartsplit.enums.ECategory;
+import com.raje.smartsplit.enums.EDebtType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,7 +21,7 @@ public class SplitResult {
     private Long id;
 
     @Enumerated(EnumType.STRING)
-    private CategoryEnum category;
+    private ECategory category;
 
     @ManyToOne
     private SplitExpensesGroup splitExpensesGroup;
@@ -33,7 +33,7 @@ public class SplitResult {
     private Double amount;
 
     @Enumerated(EnumType.STRING)
-    private DebtTypeEnum debtType;
+    private EDebtType debtType;
 
 
 }

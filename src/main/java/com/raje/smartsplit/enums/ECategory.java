@@ -1,6 +1,6 @@
 package com.raje.smartsplit.enums;
 
-public enum CategoryEnum {
+public enum ECategory {
     GENERAL("Geral"),
     MEAT("Carne"),
     BEER("Cerveja"),
@@ -12,7 +12,7 @@ public enum CategoryEnum {
 
     private final String category;
 
-    CategoryEnum(String category) {
+    ECategory(String category) {
         this.category = category;
     }
 }

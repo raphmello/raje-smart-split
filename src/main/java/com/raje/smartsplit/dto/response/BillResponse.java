@@ -1,7 +1,7 @@
 package com.raje.smartsplit.dto.response;
 
 import com.raje.smartsplit.entity.Bill;
-import com.raje.smartsplit.enums.CategoryEnum;
+import com.raje.smartsplit.enums.ECategory;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,7 +18,7 @@ public class BillResponse {
     private String description;
 
     @Enumerated(EnumType.STRING)
-    private CategoryEnum category;
+    private ECategory category;
 
     private Double amount;
 

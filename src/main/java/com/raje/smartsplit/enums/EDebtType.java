@@ -1,12 +1,12 @@
 package com.raje.smartsplit.enums;
 
-public enum DebtTypeEnum {
+public enum EDebtType {
     DEBTOR("deve pagar"),
     CREDITOR("deve receber");
 
     private String description;
 
-    DebtTypeEnum(String description) {
+    EDebtType(String description) {
         this.description = description;
     }
 }
