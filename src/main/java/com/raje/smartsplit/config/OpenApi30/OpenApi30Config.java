@@ -31,8 +31,8 @@ public class OpenApi30Config {
     private List<Server> createServers() {
         List<Server> servers = new ArrayList<>();
         Server serverProd = new Server();
-        serverProd.setDescription("PROD");
-        serverProd.setUrl("https://aws.prod.smartsplit");
+        serverProd.setDescription("QA");
+        serverProd.setUrl("https://smart-split-raje-app.herokuapp.com");
         Server serverDev = new Server();
         serverDev.setDescription("DEV");
         serverDev.setUrl("http://localhost:8080");
