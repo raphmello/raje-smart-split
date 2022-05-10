@@ -72,6 +72,13 @@ public class GroupManagementController {
         return new ResponseEntity<>(groupUpdated, HttpStatus.CREATED);
     }
 
+    @DeleteMapping("/{id}/currentUser/enter")
+    @Operation(summary = "Enter the group{id}")
+    public ResponseEntity<SplitGroupResponse> exitTheGroupById(@PathVariable(value = "id") Long groupId) {
+        groupManagementService.exitTheGroup(groupId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
     @PostMapping("/{id}/currentUser/addBill")
     @Operation(summary = "Add new bill to group{id}")
     public ResponseEntity<SplitGroupResponse> addBillToTheGroupId(@PathVariable(value = "id") Long groupId,

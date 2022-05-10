@@ -73,4 +73,9 @@ public class GroupManagementService {
             throw new RuntimeException("User is not a participant");
         return optional.get();
     }
+
+    @Transactional
+    public void exitTheGroup(Long groupId) {
+
+    }
 }
