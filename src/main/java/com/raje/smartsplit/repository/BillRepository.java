@@ -9,8 +9,8 @@ import java.util.List;
 
 @Repository
 public interface BillRepository extends JpaRepository<Bill, Long> {
-    @Query(value =  "SELECT * FROM smartsplit.public.bill b " +
-                    "INNER JOIN smartsplit.public.participant p ON b.participant_id = p.id " +
+    @Query(value =  "SELECT * FROM bill b " +
+                    "INNER JOIN participant p ON b.participant_id = p.id " +
                     "WHERE p.split_group_id = :groupId",
             nativeQuery = true)
     List<Bill> findBySplitGroup(Long groupId);
