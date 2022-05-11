@@ -6,6 +6,7 @@ import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import io.swagger.v3.oas.models.servers.Server;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -15,6 +16,10 @@ import java.util.List;
 
 @Configuration
 public class OpenApi30Config {
+
+    @Value("${swagger.server.url}")
+    private String swaggerUrl;
+
     @Bean
     public OpenAPI customOpenAPI() {
 
@@ -30,14 +35,10 @@ public class OpenApi30Config {
 
     private List<Server> createServers() {
         List<Server> servers = new ArrayList<>();
-        Server serverProd = new Server();
-        serverProd.setDescription("QA");
-        serverProd.setUrl("https://smart-split-raje-app.herokuapp.com");
-        Server serverDev = new Server();
-        serverDev.setDescription("DEV");
-        serverDev.setUrl("http://localhost:8080");
-        servers.add(serverDev);
-        servers.add(serverProd);
+        Server server = new Server();
+        server.setDescription("QA");
+        server.setUrl(swaggerUrl);
+        servers.add(server);
         return servers;
     }
 }

@@ -97,7 +97,7 @@
 		<profile>
 			<id>prod</id>
 			<properties>
-				<activatedProperties>prod</activatedProperties>
+				<activatedProperties>qa</activatedProperties>
 			</properties>
 			<activation>
 				<activeByDefault>false</activeByDefault>
