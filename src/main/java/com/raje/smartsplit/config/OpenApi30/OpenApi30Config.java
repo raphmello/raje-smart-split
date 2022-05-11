@@ -17,8 +17,11 @@ import java.util.List;
 @Configuration
 public class OpenApi30Config {
 
+    @Value("${swagger.server.name}")
+    private String serverName;
+
     @Value("${swagger.server.url}")
-    private String swaggerUrl;
+    private String serverUrl;
 
     @Bean
     public OpenAPI customOpenAPI() {
@@ -36,8 +39,8 @@ public class OpenApi30Config {
     private List<Server> createServers() {
         List<Server> servers = new ArrayList<>();
         Server server = new Server();
-        server.setDescription("QA");
-        server.setUrl(swaggerUrl);
+        server.setDescription(serverName);
+        server.setUrl(serverUrl);
         servers.add(server);
         return servers;
     }
