@@ -79,7 +79,7 @@ public class GroupManagementController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PostMapping("/{id}/currentUser/addBill")
+    @PostMapping("/{id}/currentUser/bill")
     @Operation(summary = "Add new bill to group{id}")
     public ResponseEntity<SplitGroupResponse> addBillToTheGroupId(@PathVariable(value = "id") Long groupId,
                                                                   @RequestBody @Valid CreateBillRequest billRequest) {
