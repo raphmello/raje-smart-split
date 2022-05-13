@@ -74,8 +74,7 @@ public class GroupManagementService {
         return optional.get();
     }
 
-    @Transactional
     public void exitTheGroup(Long groupId) {
-
+        groupService.removeCurrentUserFromGroup(groupId);
     }
 }

@@ -54,7 +54,7 @@ public class GroupManagementController {
     @GetMapping("/{id}/currentUser")
     @Operation(summary = "Retrieve a group by id that current user is included (includes all bills and participants)")
     public ResponseEntity<SplitGroupResponse> getGroup(@PathVariable("id") Long groupId) {
-        SplitGroupResponse response = groupService.getGroupByIdAndCurrentUser(groupId);
+        SplitGroupResponse response = groupService.getGroupResponseByIdAndCurrentUser(groupId);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
@@ -72,8 +72,8 @@ public class GroupManagementController {
         return new ResponseEntity<>(groupUpdated, HttpStatus.CREATED);
     }
 
-    @DeleteMapping("/{id}/currentUser/enter")
-    @Operation(summary = "Enter the group{id}")
+    @DeleteMapping("/{id}/currentUser/exit")
+    @Operation(summary = "Remove currentUser from the group{id} and delete all bills related to the user removed")
     public ResponseEntity<SplitGroupResponse> exitTheGroupById(@PathVariable(value = "id") Long groupId) {
         groupManagementService.exitTheGroup(groupId);
         return new ResponseEntity<>(HttpStatus.OK);

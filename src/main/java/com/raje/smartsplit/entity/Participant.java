@@ -26,7 +26,7 @@ public class Participant {
     @ManyToOne
     private User user;
 
-    @OneToMany(mappedBy = "participant")
+    @OneToMany(mappedBy = "participant", cascade = CascadeType.ALL)
     private List<Bill> bills = new ArrayList<>();
 
     private Double splitShare = 1.;

@@ -40,4 +40,13 @@ public class SplitGroup {
 
         this.participants.add(participant);
     }
+
+    public void removeParticipant(User user) {
+        Participant participant = null;
+        for (Participant p: participants) {
+            if(p.getUser().equals(user))
+                participant = p;
+        }
+        participants.remove(participant);
+    }
 }

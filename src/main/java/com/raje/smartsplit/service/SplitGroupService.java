@@ -22,13 +22,15 @@ public class SplitGroupService {
     private final SplitGroupRepository splitGroupRepository;
     private final UserService userService;
     private final ParticipantRepository participantRepository;
+    private final ParticipantService participantService;
     private final JwtUtils jwtUtils;
 
     @Autowired
-    public SplitGroupService(SplitGroupRepository splitGroupRepository, UserRepository userRepository, UserService userService, ParticipantRepository participantRepository, JwtUtils jwtUtils) {
+    public SplitGroupService(SplitGroupRepository splitGroupRepository, UserRepository userRepository, UserService userService, ParticipantRepository participantRepository, ParticipantService participantService, JwtUtils jwtUtils) {
         this.splitGroupRepository = splitGroupRepository;
         this.userService = userService;
         this.participantRepository = participantRepository;
+        this.participantService = participantService;
         this.jwtUtils = jwtUtils;
     }
 
@@ -46,10 +48,18 @@ public class SplitGroupService {
         return splitGroupRepository.save(group);
     }
 
-    public SplitGroupResponse getGroupByIdAndCurrentUser(Long groupId) {
+    public SplitGroupResponse getGroupResponseByIdAndCurrentUser(Long groupId) {
         Long userId = jwtUtils.getUserFromContext().getId();
         Optional<SplitGroup> optional = splitGroupRepository.findByGroupIdAndUserId(groupId, userId);
         return optional.map(SplitGroupResponse::new).orElse(null);
+    }
+
+    public SplitGroup getGroupByIdAndCurrentUser(Long groupId) {
+        Long userId = jwtUtils.getUserFromContext().getId();
+        Optional<SplitGroup> optional = splitGroupRepository.findByGroupIdAndParticipant(groupId, userId);
+        if (optional.isEmpty())
+            throw new RuntimeException("Group not found");
+        return optional.get();
     }
 
     public SplitGroupResponse addParticipantToGroup(User user, SplitGroup splitGroup) {
@@ -73,5 +83,28 @@ public class SplitGroupService {
     public List<SplitGroup> findAllGroupsByUsername() {
         Long id = jwtUtils.getUserFromContext().getId();
         return splitGroupRepository.findByUserId(id);
+    }
+
+    @Transactional
+    public void removeCurrentUserFromGroup(Long groupId) {
+        SplitGroup group = getGroupByIdAndCurrentUser(groupId);
+        User currentUser = jwtUtils.getUserFromContext();
+
+        if (userIsTheOwner(group, currentUser))
+            throw new RuntimeException("User cannot exit a group that was created by himself");
+
+        removeCurrentUserFromGroup(groupId, group, currentUser);
+    }
+
+    private void removeCurrentUserFromGroup(Long groupId, SplitGroup group, User currentUser) {
+        group.removeParticipant(currentUser);
+        splitGroupRepository.save(group);
+
+        Participant participant = participantService.findByGroupIdAndUserId(groupId, currentUser.getId());
+        participantRepository.delete(participant);
+    }
+
+    private boolean userIsTheOwner(SplitGroup group, User user) {
+        return group.getCreator().equals(user);
     }
 }
