@@ -1,5 +1,6 @@
 package com.raje.smartsplit.entity;
 
+import com.raje.smartsplit.exception.UserAlreadyParticipantException;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -36,7 +37,7 @@ public class SplitGroup {
                 .filter(p -> p.equals(participant))
                 .findFirst();
         if(first.isPresent())
-            throw new RuntimeException("User is already in this group.");
+            throw new UserAlreadyParticipantException();
 
         this.participants.add(participant);
     }

@@ -6,6 +6,8 @@ import com.raje.smartsplit.dto.response.SplitGroupResponse;
 import com.raje.smartsplit.entity.Participant;
 import com.raje.smartsplit.entity.SplitGroup;
 import com.raje.smartsplit.entity.User;
+import com.raje.smartsplit.exception.GroupNotFountException;
+import com.raje.smartsplit.exception.NotAllowedToExitException;
 import com.raje.smartsplit.repository.ParticipantRepository;
 import com.raje.smartsplit.repository.SplitGroupRepository;
 import com.raje.smartsplit.repository.UserRepository;
@@ -48,17 +50,24 @@ public class SplitGroupService {
         return splitGroupRepository.save(group);
     }
 
-    public SplitGroupResponse getGroupResponseByIdAndCurrentUser(Long groupId) {
-        Long userId = jwtUtils.getUserFromContext().getId();
+    public SplitGroupResponse getGroupResponseByIdAndCurrentUser(Long groupId, Long userId) {
         Optional<SplitGroup> optional = splitGroupRepository.findByGroupIdAndUserId(groupId, userId);
-        return optional.map(SplitGroupResponse::new).orElse(null);
+        if (optional.isEmpty())
+            throw new GroupNotFountException("Group not found.");
+        return new SplitGroupResponse(optional.get());
     }
 
-    public SplitGroup getGroupByIdAndCurrentUser(Long groupId) {
-        Long userId = jwtUtils.getUserFromContext().getId();
+    public SplitGroup getGroupByIdAndCurrentUser(Long groupId, Long userId) {
         Optional<SplitGroup> optional = splitGroupRepository.findByGroupIdAndParticipant(groupId, userId);
         if (optional.isEmpty())
-            throw new RuntimeException("Group not found");
+            throw new GroupNotFountException("Group not found.");
+        return optional.get();
+    }
+
+    public SplitGroup getGroupById(Long groupId) {
+        Optional<SplitGroup> optional = splitGroupRepository.findById(groupId);
+        if (optional.isEmpty())
+            throw new GroupNotFountException("Group not found.");
         return optional.get();
     }
 
@@ -86,12 +95,12 @@ public class SplitGroupService {
     }
 
     @Transactional
-    public void removeCurrentUserFromGroup(Long groupId) {
-        SplitGroup group = getGroupByIdAndCurrentUser(groupId);
+    public void removeCurrentUserFromGroup(Long groupId, Long userId) {
+        SplitGroup group = getGroupByIdAndCurrentUser(groupId, userId);
         User currentUser = jwtUtils.getUserFromContext();
 
         if (userIsTheOwner(group, currentUser))
-            throw new RuntimeException("User cannot exit a group that was created by himself");
+            throw new NotAllowedToExitException();
 
         removeCurrentUserFromGroup(groupId, group, currentUser);
     }

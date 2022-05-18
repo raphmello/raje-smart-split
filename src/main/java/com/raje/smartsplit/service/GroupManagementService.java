@@ -8,28 +8,25 @@ import com.raje.smartsplit.entity.Participant;
 import com.raje.smartsplit.entity.SplitGroup;
 import com.raje.smartsplit.entity.User;
 import com.raje.smartsplit.repository.BillRepository;
-import com.raje.smartsplit.repository.SplitGroupRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.Optional;
 
 @Service
 public class GroupManagementService {
 
     private final BillRepository billRepository;
-    private final SplitGroupRepository groupRepository;
+    private final ParticipantService participantService;
     private final SplitGroupService groupService;
     private final JwtUtils jwtUtils;
 
     @Autowired
     public GroupManagementService(BillRepository billRepository,
-                                  SplitGroupService groupService,
-                                  SplitGroupRepository groupRepository,
+                                  ParticipantService participantService, SplitGroupService groupService,
                                   JwtUtils jwtUtils) {
         this.billRepository = billRepository;
-        this.groupRepository = groupRepository;
+        this.participantService = participantService;
         this.groupService = groupService;
         this.jwtUtils = jwtUtils;
     }
@@ -37,28 +34,20 @@ public class GroupManagementService {
     @Transactional
     public SplitGroupResponse participateInTheGroup(Long groupId) {
         User user = jwtUtils.getUserFromContext();
-        Optional<SplitGroup> optionalGroup = groupRepository.findById(groupId);
-
-        if (optionalGroup.isEmpty())
-            throw new RuntimeException("Group not found");
-
-        return groupService.addParticipantToGroup(user, optionalGroup.get());
+        SplitGroup group = groupService.getGroupById(groupId);
+        return groupService.addParticipantToGroup(user, group);
     }
 
     @Transactional
     public SplitGroupResponse addBillToParticipant(Long groupId, CreateBillRequest billRequest) {
         User user = jwtUtils.getUserFromContext();
 
-        Optional<SplitGroup> optionalGroup = groupRepository.findById(groupId);
-        if(optionalGroup.isEmpty())
-            throw new RuntimeException("Group not found.");
-
-        SplitGroup group = optionalGroup.get();
+        SplitGroup group = groupService.getGroupById(groupId);
 
         Bill bill = billRequest.requestToEntity();
         bill.setUser(user);
 
-        Participant participant = getParticipantByUser(group, user);
+        Participant participant = participantService.findUserIfParticipantOfGroup(group, user);
         participant.addBill(bill);
         bill.setParticipant(participant);
 
@@ -67,14 +56,8 @@ public class GroupManagementService {
         return new SplitGroupResponse(group);
     }
 
-    private Participant getParticipantByUser(SplitGroup group, User user) {
-        Optional<Participant> optional = group.getParticipants().stream().filter(p -> p.getUser().equals(user)).findFirst();
-        if (optional.isEmpty())
-            throw new RuntimeException("User is not a participant");
-        return optional.get();
-    }
-
     public void exitTheGroup(Long groupId) {
-        groupService.removeCurrentUserFromGroup(groupId);
+        Long userId = jwtUtils.getUserFromContext().getId();
+        groupService.removeCurrentUserFromGroup(groupId, userId);
     }
 }

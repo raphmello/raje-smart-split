@@ -1,5 +1,6 @@
 package com.raje.smartsplit.controller;
 
+import com.raje.smartsplit.config.SecurityConfig.JwtUtils;
 import com.raje.smartsplit.dto.request.CreateBillRequest;
 import com.raje.smartsplit.dto.request.CreateSplitGroupRequest;
 import com.raje.smartsplit.dto.response.SplitGroupResponse;
@@ -23,13 +24,14 @@ import java.util.List;
 public class GroupManagementController {
 
     private final GroupManagementService groupManagementService;
-
     private final SplitGroupService groupService;
+    private final JwtUtils jwtUtils;
 
     @Autowired
-    public GroupManagementController(GroupManagementService groupManagementService, SplitGroupService groupService) {
+    public GroupManagementController(GroupManagementService groupManagementService, SplitGroupService groupService, JwtUtils jwtUtils) {
         this.groupManagementService = groupManagementService;
         this.groupService = groupService;
+        this.jwtUtils = jwtUtils;
     }
 
     @GetMapping
@@ -54,7 +56,8 @@ public class GroupManagementController {
     @GetMapping("/{id}/currentUser")
     @Operation(summary = "Retrieve a group by id that current user is included (includes all bills and participants)")
     public ResponseEntity<SplitGroupResponse> getGroup(@PathVariable("id") Long groupId) {
-        SplitGroupResponse response = groupService.getGroupResponseByIdAndCurrentUser(groupId);
+        Long userId = jwtUtils.getUserFromContext().getId();
+        SplitGroupResponse response = groupService.getGroupResponseByIdAndCurrentUser(groupId, userId);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
