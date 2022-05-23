@@ -6,9 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Entity
 @AllArgsConstructor
@@ -30,6 +28,9 @@ public class Participant {
     private List<Bill> bills = new ArrayList<>();
 
     private Double splitShare = 1.;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    private Set<BillCategory> billCategories = new HashSet<>();
 
     @Override
     public boolean equals(Object o) {
