@@ -1,3 +1,12 @@
 INSERT INTO roles(name) VALUES('ROLE_USER');
 INSERT INTO roles(name) VALUES('ROLE_MODERATOR');
 INSERT INTO roles(name) VALUES('ROLE_ADMIN');
+
+INSERT INTO bill_category VALUES ('GENERAL','Geral');
+INSERT INTO bill_category VALUES ('MEAT','Carne');
+INSERT INTO bill_category VALUES ('BEER','Cerveja');
+INSERT INTO bill_category VALUES ('ALCOHOLIC_DRINK','Bebida alcoólica');
+INSERT INTO bill_category VALUES ('VEGAN_PRODUCT','Produto vegano');
+INSERT INTO bill_category VALUES ('FUEL','Combustível');
+INSERT INTO bill_category VALUES ('ROAD_TAX','Pedágio');
+INSERT INTO bill_category VALUES ('RENT','Aluguel');
