@@ -4,6 +4,7 @@ import com.raje.smartsplit.dto.response.SplitSimplificationResponse;
 import com.raje.smartsplit.entity.SplitResult;
 import com.raje.smartsplit.entity.SplitSimplificationResult;
 import com.raje.smartsplit.service.SmartCalculatorService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,6 +17,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/calculator")
+@Tag(name = "Smart Split Calculator")
 public class SmartCalculatorController {
 
     private final SmartCalculatorService smartCalculatorService;

@@ -9,6 +9,7 @@ import com.raje.smartsplit.entity.SplitGroup;
 import com.raje.smartsplit.service.GroupManagementService;
 import com.raje.smartsplit.service.SplitGroupService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +22,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("api/group")
+@Tag(name = "Group Management")
 public class GroupManagementController {
 
     private final GroupManagementService groupManagementService;

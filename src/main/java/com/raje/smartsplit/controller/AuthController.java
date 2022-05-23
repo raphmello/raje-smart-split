@@ -11,6 +11,7 @@ import com.raje.smartsplit.entity.UserDetailsImpl;
 import com.raje.smartsplit.enums.ERole;
 import com.raje.smartsplit.repository.RoleRepository;
 import com.raje.smartsplit.repository.UserRepository;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -30,6 +31,7 @@ import java.util.stream.Collectors;
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/auth")
+@Tag(name = "Authentication")
 public class AuthController {
 
     private final AuthenticationManager authenticationManager;
