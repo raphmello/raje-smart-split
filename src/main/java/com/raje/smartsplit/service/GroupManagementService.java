@@ -3,10 +3,7 @@ package com.raje.smartsplit.service;
 import com.raje.smartsplit.config.SecurityConfig.JwtUtils;
 import com.raje.smartsplit.dto.request.CreateBillRequest;
 import com.raje.smartsplit.dto.response.SplitGroupResponse;
-import com.raje.smartsplit.entity.Bill;
-import com.raje.smartsplit.entity.Participant;
-import com.raje.smartsplit.entity.SplitGroup;
-import com.raje.smartsplit.entity.User;
+import com.raje.smartsplit.entity.*;
 import com.raje.smartsplit.repository.BillRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,15 +16,17 @@ public class GroupManagementService {
     private final BillRepository billRepository;
     private final ParticipantService participantService;
     private final SplitGroupService groupService;
+    private final CategoryService categoryService;
     private final JwtUtils jwtUtils;
 
     @Autowired
     public GroupManagementService(BillRepository billRepository,
                                   ParticipantService participantService, SplitGroupService groupService,
-                                  JwtUtils jwtUtils) {
+                                  CategoryService categoryService, JwtUtils jwtUtils) {
         this.billRepository = billRepository;
         this.participantService = participantService;
         this.groupService = groupService;
+        this.categoryService = categoryService;
         this.jwtUtils = jwtUtils;
     }
 
@@ -43,8 +42,9 @@ public class GroupManagementService {
         User user = jwtUtils.getUserFromContext();
 
         SplitGroup group = groupService.getGroupById(groupId);
+        BillCategory category = categoryService.findById(billRequest.getCategoryId());
 
-        Bill bill = billRequest.requestToEntity();
+        Bill bill = billRequest.requestToEntity(category);
         bill.setUser(user);
 
         Participant participant = participantService.findUserIfParticipantOfGroup(group, user);

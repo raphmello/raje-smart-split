@@ -1,7 +1,7 @@
 package com.raje.smartsplit.dto.request;
 
 import com.raje.smartsplit.entity.Bill;
-import com.raje.smartsplit.enums.ECategory;
+import com.raje.smartsplit.entity.BillCategory;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,15 +19,15 @@ public class CreateBillRequest {
     private String description;
 
     @NotNull
-    private ECategory category = ECategory.GENERAL;
+    private Long categoryId;
 
     @NotNull
     private Double amount;
 
-    public Bill requestToEntity() {
+    public Bill requestToEntity(BillCategory category) {
         Bill bill = new Bill();
         bill.setDescription(this.description);
-        bill.setCategory(this.category);
+        bill.setCategory(category);
         bill.setAmount(this.amount);
         return bill;
     }

@@ -1,0 +1,9 @@
+package com.raje.smartsplit.repository;
+
+import com.raje.smartsplit.entity.BillCategory;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public interface CategoryRepository extends JpaRepository<BillCategory, Long> {
+}

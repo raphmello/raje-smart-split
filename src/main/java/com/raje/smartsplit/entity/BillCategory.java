@@ -1,12 +1,14 @@
 package com.raje.smartsplit.entity;
 
-import com.raje.smartsplit.enums.EDebtType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.validation.constraints.NotNull;
 
 @Entity
@@ -14,25 +16,14 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 @Getter
 @Setter
-public class SplitResult {
+public class BillCategory {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @ManyToOne
-    private BillCategory category;
-
-    @ManyToOne
-    private SplitGroup splitGroup;
-
-    @ManyToOne
-    private User splitParticipant;
+    @NotNull
+    private String category = "GENERAL";
 
     @NotNull
-    private Double amount;
-
-    @Enumerated(EnumType.STRING)
-    private EDebtType debtType;
-
-
+    private String description = "Geral";
 }

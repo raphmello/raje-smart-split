@@ -1,6 +1,5 @@
 package com.raje.smartsplit.entity;
 
-import com.raje.smartsplit.enums.ECategory;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,8 +21,9 @@ public class Bill {
     @NotNull
     private String description;
 
-    @Enumerated(EnumType.STRING)
-    private ECategory category = ECategory.GENERAL;
+    @NotNull
+    @ManyToOne
+    private BillCategory category;
 
     @ManyToOne
     @NotNull
