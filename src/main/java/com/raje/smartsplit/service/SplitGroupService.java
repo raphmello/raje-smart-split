@@ -77,12 +77,17 @@ public class SplitGroupService {
     }
 
     private SplitGroup addParticipant(User user, SplitGroup splitGroup) {
-        Participant participant = new Participant();
-        participant.setUser(user);
-        participant.setSplitGroup(splitGroup);
+        Participant participant = createParticipant(user, splitGroup);
         splitGroup.addParticipant(participant);
         participantRepository.save(participant);
         return splitGroupRepository.save(splitGroup);
+    }
+
+    private Participant createParticipant(User user, SplitGroup splitGroup) {
+        Participant participant = new Participant();
+        participant.setUser(user);
+        participant.setSplitGroup(splitGroup);
+        return participant;
     }
 
     public List<SplitGroup> findAll() {
