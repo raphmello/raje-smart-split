@@ -37,7 +37,7 @@ public class GroupManagementController {
     }
 
     @GetMapping
-    @Operation(summary = "Retreive all groups (only id and name, not bills and participants) [ONLY ADMIN]")
+    @Operation(summary = "Retrieve all groups (only id and name, not bills and participants) [ONLY ADMIN]")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<SplitGroupSimpleResponse>> getAllGroups() {
         List<SplitGroup> entityList = groupService.findAll();
@@ -47,7 +47,7 @@ public class GroupManagementController {
     }
 
     @GetMapping("/currentUser")
-    @Operation(summary = "Retreive all groups from current user (only id and name, not bills and participants)")
+    @Operation(summary = "Retrieve all groups from current user (only id and name, not bills and participants)")
     public ResponseEntity<List<SplitGroupSimpleResponse>> getAllGroupsFromCurrentUser() {
         List<SplitGroup> entityList = groupService.findAllGroupsByUsername();
         List<SplitGroupSimpleResponse> responseList = new ArrayList<>();
