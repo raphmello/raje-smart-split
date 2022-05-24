@@ -3,6 +3,7 @@ package com.raje.smartsplit.service;
 import com.raje.smartsplit.config.SecurityConfig.JwtUtils;
 import com.raje.smartsplit.dto.request.CreateSplitGroupRequest;
 import com.raje.smartsplit.dto.response.SplitGroupResponse;
+import com.raje.smartsplit.entity.BillCategory;
 import com.raje.smartsplit.entity.Participant;
 import com.raje.smartsplit.entity.SplitGroup;
 import com.raje.smartsplit.entity.User;
@@ -15,22 +16,26 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class SplitGroupService {
 
     private final SplitGroupRepository splitGroupRepository;
     private final UserService userService;
+    private final CategoryService categoryService;
     private final ParticipantRepository participantRepository;
     private final ParticipantService participantService;
     private final JwtUtils jwtUtils;
 
     @Autowired
-    public SplitGroupService(SplitGroupRepository splitGroupRepository, UserRepository userRepository, UserService userService, ParticipantRepository participantRepository, ParticipantService participantService, JwtUtils jwtUtils) {
+    public SplitGroupService(SplitGroupRepository splitGroupRepository, UserRepository userRepository, UserService userService, CategoryService categoryService, ParticipantRepository participantRepository, ParticipantService participantService, JwtUtils jwtUtils) {
         this.splitGroupRepository = splitGroupRepository;
         this.userService = userService;
+        this.categoryService = categoryService;
         this.participantRepository = participantRepository;
         this.participantService = participantService;
         this.jwtUtils = jwtUtils;
@@ -120,5 +125,21 @@ public class SplitGroupService {
 
     private boolean userIsTheOwner(SplitGroup group, User user) {
         return group.getCreator().equals(user);
+    }
+
+    @Transactional
+    public Participant updateCategories(Long groupId, List<Long> categories, User user) {
+        SplitGroup group = getGroupById(groupId);
+        Set<BillCategory> categoriesForGroup = categoryService.findAllByGroupId(groupId);
+        Participant participant = participantService.findUserIfParticipantOfGroup(group, user);
+        participant.setBillCategories(new HashSet<>());
+        categories.forEach(c -> {
+            BillCategory category = categoryService.findById(c);
+            Optional<BillCategory> optionalCategory = categoriesForGroup.stream().filter(categ -> categ.equals(category)).findFirst();
+            if (optionalCategory.isPresent()) {
+                participant.addCategory(category);
+            }
+        });
+        return participantRepository.save(participant);
     }
 }

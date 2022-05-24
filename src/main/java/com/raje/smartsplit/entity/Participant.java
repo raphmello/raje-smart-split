@@ -52,4 +52,8 @@ public class Participant {
     public void addBill(Bill bill) {
         this.bills.add(bill);
     }
+
+    public void addCategory(BillCategory billCategory) {
+        this.billCategories.add(billCategory);
+    }
 }

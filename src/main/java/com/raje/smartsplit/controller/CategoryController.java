@@ -1,18 +1,19 @@
 package com.raje.smartsplit.controller;
 
+import com.raje.smartsplit.config.SecurityConfig.JwtUtils;
 import com.raje.smartsplit.dto.response.BillCategoryResponse;
+import com.raje.smartsplit.dto.response.ParticipantResponse;
 import com.raje.smartsplit.entity.BillCategory;
+import com.raje.smartsplit.entity.Participant;
+import com.raje.smartsplit.entity.User;
 import com.raje.smartsplit.service.CategoryService;
+import com.raje.smartsplit.service.SplitGroupService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -22,16 +23,20 @@ import java.util.Set;
 @Tag(name = "Category")
 public class CategoryController {
 
-    private final CategoryService service;
+    private final CategoryService categoryService;
+    private final SplitGroupService groupService;
+    private final JwtUtils jwtUtils;
 
-    public CategoryController(CategoryService service) {
-        this.service = service;
+    public CategoryController(CategoryService categoryService, SplitGroupService groupService, JwtUtils jwtUtils) {
+        this.categoryService = categoryService;
+        this.groupService = groupService;
+        this.jwtUtils = jwtUtils;
     }
 
     @GetMapping
-    @Operation(summary = "Retreive all categories")
+    @Operation(summary = "Retrieve all categories")
     public ResponseEntity<Set<BillCategoryResponse>> getAllCategories() {
-        Set<BillCategory> categories = service.findAll();
+        Set<BillCategory> categories = categoryService.findAll();
         Set<BillCategoryResponse> responseList = new HashSet<>();
         categories.forEach(c -> {
             responseList.add(new BillCategoryResponse(c));
@@ -40,14 +45,23 @@ public class CategoryController {
     }
 
     @GetMapping("group/{id}")
-    @Operation(summary = "Retreive all categories for specific group{id}")
+    @Operation(summary = "Retrieve all categories for specific group{id}")
     public ResponseEntity<Set<BillCategoryResponse>> getAllCategoriesByGroupId(@PathVariable("id") Long groupId) {
-        Set<BillCategory> categories = service.findAllByGroupId(groupId);
+        Set<BillCategory> categories = categoryService.findAllByGroupId(groupId);
         Set<BillCategoryResponse> responseList = new HashSet<>();
         categories.forEach(c -> {
             responseList.add(new BillCategoryResponse(c));
         });
         return new ResponseEntity<>(responseList, HttpStatus.OK);
+    }
+
+    @PostMapping("group/{id}")
+    @Operation(summary = "Update categories for currentUser by group{id}", description = "Include categories that current user will split inside the group")
+    public ResponseEntity<ParticipantResponse> updateCategoriesForCurrentUserByGroupId(@PathVariable("id") Long groupId,
+                                                                                        @RequestBody List<Long> categoriesId) {
+        User currentUser = jwtUtils.getUserFromContext();
+        Participant participant = groupService.updateCategories(groupId, categoriesId, currentUser);
+        return new ResponseEntity<>(new ParticipantResponse(participant), HttpStatus.OK);
     }
 
 }
