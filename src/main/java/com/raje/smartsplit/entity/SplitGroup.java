@@ -32,6 +32,9 @@ public class SplitGroup {
     @OneToMany(mappedBy = "splitGroup",fetch = FetchType.EAGER)
     private List<Participant> participants = new ArrayList<>();
 
+    @OneToMany(mappedBy = "splitGroup")
+    private List<SplitResult> splitResultList = new ArrayList<>();
+
     public void addParticipant(Participant participant) {
         Optional<Participant> first = this.participants.stream()
                 .filter(p -> p.equals(participant))

@@ -11,7 +11,6 @@ import com.raje.smartsplit.exception.GroupNotFountException;
 import com.raje.smartsplit.exception.NotAllowedToExitException;
 import com.raje.smartsplit.repository.ParticipantRepository;
 import com.raje.smartsplit.repository.SplitGroupRepository;
-import com.raje.smartsplit.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -32,7 +31,7 @@ public class SplitGroupService {
     private final JwtUtils jwtUtils;
 
     @Autowired
-    public SplitGroupService(SplitGroupRepository splitGroupRepository, UserRepository userRepository, UserService userService, CategoryService categoryService, ParticipantRepository participantRepository, ParticipantService participantService, JwtUtils jwtUtils) {
+    public SplitGroupService(SplitGroupRepository splitGroupRepository, UserService userService, CategoryService categoryService, ParticipantRepository participantRepository, ParticipantService participantService, JwtUtils jwtUtils) {
         this.splitGroupRepository = splitGroupRepository;
         this.userService = userService;
         this.categoryService = categoryService;
@@ -56,7 +55,7 @@ public class SplitGroupService {
     }
 
     public SplitGroupResponse getGroupResponseByIdAndCurrentUser(Long groupId, Long userId) {
-        Optional<SplitGroup> optional = splitGroupRepository.findByGroupIdAndUserId(groupId, userId);
+        Optional<SplitGroup> optional = splitGroupRepository.findByGroupIdAndParticipant(groupId, userId);
         if (optional.isEmpty())
             throw new GroupNotFountException("Group not found.");
         return new SplitGroupResponse(optional.get());

@@ -20,18 +20,22 @@ public class SplitResult {
     private Long id;
 
     @ManyToOne
+    @NotNull
     private BillCategory category;
 
     @ManyToOne
+    @NotNull
     private SplitGroup splitGroup;
 
     @ManyToOne
-    private User splitParticipant;
+    @NotNull
+    private Participant participant;
 
     @NotNull
     private Double amount;
 
     @Enumerated(EnumType.STRING)
+    @NotNull
     private EDebtType debtType;
 
 

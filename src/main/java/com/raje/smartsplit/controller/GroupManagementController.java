@@ -5,6 +5,7 @@ import com.raje.smartsplit.dto.request.CreateBillRequest;
 import com.raje.smartsplit.dto.request.CreateSplitGroupRequest;
 import com.raje.smartsplit.dto.response.SplitGroupResponse;
 import com.raje.smartsplit.dto.response.SplitGroupSimpleResponse;
+import com.raje.smartsplit.dto.response.SplitGroupSplitResultResponse;
 import com.raje.smartsplit.entity.SplitGroup;
 import com.raje.smartsplit.service.GroupManagementService;
 import com.raje.smartsplit.service.SplitGroupService;
@@ -86,9 +87,9 @@ public class GroupManagementController {
 
     @PostMapping("/{id}/currentUser/bill")
     @Operation(summary = "Add new bill to group{id}")
-    public ResponseEntity<SplitGroupResponse> addBillToTheGroupId(@PathVariable(value = "id") Long groupId,
+    public ResponseEntity<SplitGroupSplitResultResponse> addBillToTheGroupId(@PathVariable(value = "id") Long groupId,
                                                                   @RequestBody @Valid CreateBillRequest billRequest) {
-        SplitGroupResponse groupUpdated = groupManagementService.addBillToParticipant(groupId, billRequest);
-        return new ResponseEntity<>(groupUpdated, HttpStatus.CREATED);
+        SplitGroupSplitResultResponse response = groupManagementService.addBillToParticipant(groupId, billRequest);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 }

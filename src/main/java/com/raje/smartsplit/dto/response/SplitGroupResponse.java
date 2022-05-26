@@ -24,6 +24,7 @@ public class SplitGroupResponse {
         this.title = entity.getTitle();
         this.creationDate = entity.getCreationDate();
         this.creator = new UserResponse(entity.getCreator());
+
         this.participants = new ArrayList<>();
         entity.getParticipants().forEach(participant -> participants.add(new ParticipantResponse(participant)));
     }

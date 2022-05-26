@@ -56,4 +56,12 @@ public class Participant {
     public void addCategory(BillCategory billCategory) {
         this.billCategories.add(billCategory);
     }
+
+    public Double getTotalSpent() {
+        Double totalSpent = 0.;
+        for (Bill bill : this.getBills()) {
+            totalSpent += bill.getAmount();
+        }
+        return totalSpent;
+    }
 }

@@ -3,12 +3,16 @@ package com.raje.smartsplit.service;
 import com.raje.smartsplit.config.SecurityConfig.JwtUtils;
 import com.raje.smartsplit.dto.request.CreateBillRequest;
 import com.raje.smartsplit.dto.response.SplitGroupResponse;
+import com.raje.smartsplit.dto.response.SplitGroupSplitResultResponse;
+import com.raje.smartsplit.dto.response.SplitResultResponse;
 import com.raje.smartsplit.entity.*;
 import com.raje.smartsplit.repository.BillRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class GroupManagementService {
@@ -16,16 +20,18 @@ public class GroupManagementService {
     private final BillRepository billRepository;
     private final ParticipantService participantService;
     private final SplitGroupService groupService;
+    private final SplitResultService splitResultService;
     private final CategoryService categoryService;
     private final JwtUtils jwtUtils;
 
     @Autowired
     public GroupManagementService(BillRepository billRepository,
                                   ParticipantService participantService, SplitGroupService groupService,
-                                  CategoryService categoryService, JwtUtils jwtUtils) {
+                                  SplitResultService splitResultService, CategoryService categoryService, JwtUtils jwtUtils) {
         this.billRepository = billRepository;
         this.participantService = participantService;
         this.groupService = groupService;
+        this.splitResultService = splitResultService;
         this.categoryService = categoryService;
         this.jwtUtils = jwtUtils;
     }
@@ -38,7 +44,7 @@ public class GroupManagementService {
     }
 
     @Transactional
-    public SplitGroupResponse addBillToParticipant(Long groupId, CreateBillRequest billRequest) {
+    public SplitGroupSplitResultResponse addBillToParticipant(Long groupId, CreateBillRequest billRequest) {
         User user = jwtUtils.getUserFromContext();
 
         SplitGroup group = groupService.getGroupById(groupId);
@@ -53,7 +59,13 @@ public class GroupManagementService {
 
         billRepository.save(bill);
 
-        return new SplitGroupResponse(group);
+        List<SplitResult> updatedSplitResultList = splitResultService.updateSplitResult(group);
+
+        List<SplitResultResponse> splitResultResponses = new ArrayList<>();
+
+        updatedSplitResultList.forEach(splitResult -> splitResultResponses.add(new SplitResultResponse(splitResult)));
+
+        return new SplitGroupSplitResultResponse(new SplitGroupResponse(group), splitResultResponses);
     }
 
     public void exitTheGroup(Long groupId) {

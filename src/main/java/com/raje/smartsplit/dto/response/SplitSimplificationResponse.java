@@ -21,6 +21,6 @@ public class SplitSimplificationResponse {
         this.debtor = splitSimplificationResult.getDebtor();
         this.creditor = splitSimplificationResult.getCreditor();
         this.amount = splitSimplificationResult.getAmount();
-        this.result = String.format("%s %s R$ %f para %s",this.debtor, EDebtType.DEBTOR, this.amount, this.creditor);
+        this.result = String.format("%s %s R$ %.2f para %s",this.debtor.getUsername(), EDebtType.DEBTOR, this.amount, this.creditor.getUsername());
     }
 }
