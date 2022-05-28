@@ -1,10 +1,7 @@
 package com.raje.smartsplit.entity;
 
 import com.raje.smartsplit.enums.EDebtType;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -14,6 +11,7 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 @Getter
 @Setter
+@Builder
 public class SplitResult {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

@@ -1,5 +1,6 @@
 package com.raje.smartsplit.service;
 
+import com.raje.smartsplit.dto.partial.SplitGroupTotals;
 import com.raje.smartsplit.entity.*;
 import com.raje.smartsplit.enums.EDebtType;
 import com.raje.smartsplit.repository.SplitResultRepository;
@@ -24,38 +25,23 @@ public class SplitResultService {
     }
 
     private List<SplitResult> calculatesDebtorsAndCreditorsByCategory(SplitGroup group, BillCategory category) {
-        List<Double> groupShareList = new ArrayList<>();
-        List<Double> groupAmountList = new ArrayList<>();
-        group.getParticipants().forEach(participant -> {
-            Double share = participant.getSplitShare();
-            if (participantWantsToShareThisCategory(category, participant)) {
-                groupShareList.add(share);
-            }
-            for (Bill bill : participant.getBills()) {
-                if(bill.getCategory().equals(category)) {
-                    final Double billAmount = bill.getAmount();
-                    groupAmountList.add(billAmount);
-                }
-            }
-        });
-
-        double groupTotalShareSum = groupShareList.stream().mapToDouble(Double::doubleValue).sum();
-        double groupTotalAmountSum = groupAmountList.stream().mapToDouble(Double::doubleValue).sum();
+        SplitGroupTotals totals = groupService.getTotalAmountAndTotalShareForCategory(group, category);
 
         List<SplitResult> splitResultList = new ArrayList<>();
 
         group.getParticipants()
                 .forEach(participant -> {
-                    if(participantWantsToShareThisCategory(category, participant)) {
-                        Double splitValue = calculateAmountShareForParticipant(participant, groupTotalAmountSum, groupTotalShareSum);
+                    if(groupService.participantWantsToShareThisCategory(category, participant)) {
+                        Double splitValue = calculateAmountShareForParticipant(participant, totals.getTotalAmount(), totals.getTotalShare());
                         double valueBalance = participant.getTotalSpentByCategory(category) - splitValue;
                         if (valueBalance != 0) {
-                            SplitResult sr = new SplitResult();
-                            sr.setAmount(Math.abs(valueBalance));
-                            sr.setDebtType(EDebtType.getDebtType(valueBalance));
-                            sr.setSplitGroup(group);
-                            sr.setParticipant(participant);
-                            sr.setCategory(category);
+                            SplitResult sr = SplitResult.builder()
+                                    .amount(Math.abs(valueBalance))
+                                    .debtType(EDebtType.getDebtType(valueBalance))
+                                    .splitGroup(group)
+                                    .participant(participant)
+                                    .category(category)
+                                    .build();
                             splitResultList.add(sr);
                         }
                     }
@@ -64,9 +50,7 @@ public class SplitResultService {
         return splitResultList;
     }
 
-    private boolean participantWantsToShareThisCategory(BillCategory category, Participant participant) {
-        return participant.getBillCategories().contains(category);
-    }
+
 
     @Transactional
     public void saveMultipleSplitResult(SplitGroup group, List<SplitResult> splitResultList) {
