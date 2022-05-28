@@ -20,7 +20,6 @@ public class SplitResult {
     private Long id;
 
     @ManyToOne
-    @NotNull
     private BillCategory category;
 
     @ManyToOne

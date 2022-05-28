@@ -57,11 +57,24 @@ public class Participant {
         this.billCategories.add(billCategory);
     }
 
-    public Double getTotalSpent() {
-        Double totalSpent = 0.;
+    public Double getTotalSpentByCategory(BillCategory category) {
+        Double total = 0.;
         for (Bill bill : this.getBills()) {
-            totalSpent += bill.getAmount();
+            if (bill.getCategory().equals(category)) {
+                total += bill.getAmount();
+            }
         }
-        return totalSpent;
+        return total;
+    }
+
+    public List<Double> getTotalByCategory(BillCategory category) {
+        List<Double> amountList = new ArrayList<>();
+        for (Bill bill : this.getBills()) {
+            if(bill.getCategory().equals(category)) {
+                final Double billAmount = bill.getAmount();
+                amountList.add(billAmount);
+            }
+        }
+        return amountList;
     }
 }

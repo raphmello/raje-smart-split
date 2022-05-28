@@ -10,7 +10,10 @@ import java.util.Optional;
 
 @Repository
 public interface SplitResultRepository extends JpaRepository<SplitResult, Long> {
-        @Query(value = "SELECT * FROM split_result sr " +
+    @Query(value = "SELECT * FROM split_result sr " +
             "WHERE sr.split_group_id = :groupId", nativeQuery = true)
     List<SplitResult> findAllBySplitGroup(Long groupId);
+
+//    @Query(value = "", nativeQuery = true)
+//    List<SplitResult> findAllBySplitGroupGroupedByParticipant();
 }
