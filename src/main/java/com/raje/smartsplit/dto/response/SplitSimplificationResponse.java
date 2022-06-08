@@ -12,15 +12,15 @@ import lombok.Setter;
 @AllArgsConstructor
 public class SplitSimplificationResponse {
 
-    private User debtor;
-    private User creditor;
+    private String debtor;
+    private String creditor;
     private Double amount;
     private String result;
 
     public SplitSimplificationResponse(SplitSimplificationResult splitSimplificationResult) {
-        this.debtor = splitSimplificationResult.getDebtor();
-        this.creditor = splitSimplificationResult.getCreditor();
+        this.debtor = splitSimplificationResult.getDebtor().getUsername();
+        this.creditor = splitSimplificationResult.getCreditor().getUsername();
         this.amount = splitSimplificationResult.getAmount();
-        this.result = String.format("%s %s R$ %.2f para %s",this.debtor.getUsername(), EDebtType.DEBTOR, this.amount, this.creditor.getUsername());
+        this.result = String.format("%s %s R$ %.2f para %s",this.debtor, EDebtType.DEBTOR.getDescription(), this.amount, this.creditor);
     }
 }

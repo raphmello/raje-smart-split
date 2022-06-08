@@ -1,7 +1,6 @@
 package com.raje.smartsplit.controller;
 
 import com.raje.smartsplit.dto.response.SplitSimplificationResponse;
-import com.raje.smartsplit.entity.SplitResult;
 import com.raje.smartsplit.entity.SplitSimplificationResult;
 import com.raje.smartsplit.service.SmartCalculatorService;
 import io.swagger.v3.oas.annotations.tags.Tag;

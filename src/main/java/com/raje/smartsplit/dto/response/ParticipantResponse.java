@@ -1,6 +1,5 @@
 package com.raje.smartsplit.dto.response;
 
-import com.raje.smartsplit.entity.Bill;
 import com.raje.smartsplit.entity.Participant;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

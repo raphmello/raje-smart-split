@@ -33,6 +33,13 @@ public class UserService {
         return optional.get();
     }
 
+    public User getUserByUsername(String username) {
+        Optional<User> optional = repository.findByUsername(username);
+        if (optional.isEmpty())
+            throw new RuntimeException("User not fount");
+        return optional.get();
+    }
+
     public List<User> findAll() {
         return repository.findAll();
     }
