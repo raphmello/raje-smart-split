@@ -48,4 +48,13 @@ public class ParticipantController {
         return new ResponseEntity<>(participantSplitGroupResponse, HttpStatus.OK);
     }
 
+    @PutMapping("/{id}")
+    @Operation(summary = "Update split share for participant{id}", description = "Update split share for the participant")
+    public ResponseEntity<ParticipantResponse> updateSplitShareForCurrentParticipant(@PathVariable("id") Long participantId,
+                                                                                                 @RequestBody Double splitShare) {
+        User currentUser = jwtUtils.getUserFromContext();
+        Participant participant = participantService.updateSplitShare(participantId, splitShare, currentUser);
+        return new ResponseEntity<>(new ParticipantResponse(participant), HttpStatus.OK);
+    }
+
 }
