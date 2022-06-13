@@ -107,7 +107,7 @@ public class SplitResultService {
     public ParticipantSplitGroupResponse updateCategories(Long groupId, List<Long> categories, User user) {
         SplitGroup group = groupService.getGroupById(groupId);
         Set<BillCategory> categoriesForGroup = categoryService.findAllByGroupId(groupId);
-        Participant participant = participantService.findUserIfParticipantOfGroup(group, user);
+        Participant participant = participantService.findParticipantIfUserIsParticipantOfGroup(group, user);
         participant.setBillCategories(new HashSet<>());
         categories.forEach(c -> {
             BillCategory category = categoryService.findById(c);

@@ -24,13 +24,9 @@ import java.util.Set;
 public class CategoryController {
 
     private final CategoryService categoryService;
-    private final SplitResultService splitResultService;
-    private final JwtUtils jwtUtils;
 
-    public CategoryController(CategoryService categoryService, SplitResultService splitResultService, JwtUtils jwtUtils) {
+    public CategoryController(CategoryService categoryService) {
         this.categoryService = categoryService;
-        this.splitResultService = splitResultService;
-        this.jwtUtils = jwtUtils;
     }
 
     @GetMapping
@@ -54,14 +50,4 @@ public class CategoryController {
         });
         return new ResponseEntity<>(responseList, HttpStatus.OK);
     }
-
-    @PostMapping("group/{id}")
-    @Operation(summary = "Update categories for currentUser by group{id}", description = "Include categories that current user wants to split inside the group")
-    public ResponseEntity<ParticipantSplitGroupResponse> updateCategoriesForCurrentUserByGroupId(@PathVariable("id") Long groupId,
-                                                                                                 @RequestBody List<Long> categoriesId) {
-        User currentUser = jwtUtils.getUserFromContext();
-        ParticipantSplitGroupResponse participantSplitGroupResponse = splitResultService.updateCategories(groupId, categoriesId, currentUser);
-        return new ResponseEntity<>(participantSplitGroupResponse, HttpStatus.OK);
-    }
-
 }

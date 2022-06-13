@@ -53,7 +53,7 @@ public class GroupManagementService {
         Bill bill = billRequest.requestToEntity(category);
         bill.setUser(user);
 
-        Participant participant = participantService.findUserIfParticipantOfGroup(group, user);
+        Participant participant = participantService.findParticipantIfUserIsParticipantOfGroup(group, user);
         participant.addBill(bill);
         bill.setParticipant(participant);
 
