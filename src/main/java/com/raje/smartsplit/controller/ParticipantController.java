@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -50,11 +51,11 @@ public class ParticipantController {
 
     @PutMapping("/{id}")
     @Operation(summary = "Update split share for participant{id}", description = "Update split share for the participant")
-    public ResponseEntity<ParticipantResponse> updateSplitShareForCurrentParticipant(@PathVariable("id") Long participantId,
+    public ResponseEntity<ParticipantSplitGroupResponse> updateSplitShareForCurrentParticipant(@PathVariable("id") Long participantId,
                                                                                                  @RequestBody Double splitShare) {
         User currentUser = jwtUtils.getUserFromContext();
-        Participant participant = participantService.updateSplitShare(participantId, splitShare, currentUser);
-        return new ResponseEntity<>(new ParticipantResponse(participant), HttpStatus.OK);
+        ParticipantSplitGroupResponse participantSplitGroupResponse = participantService.updateSplitShare(participantId, splitShare, currentUser);
+        return new ResponseEntity<>(participantSplitGroupResponse, HttpStatus.OK);
     }
 
 }

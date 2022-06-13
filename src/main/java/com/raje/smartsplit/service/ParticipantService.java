@@ -1,25 +1,32 @@
 package com.raje.smartsplit.service;
 
+import com.raje.smartsplit.dto.response.ParticipantResponse;
+import com.raje.smartsplit.dto.response.ParticipantSplitGroupResponse;
+import com.raje.smartsplit.dto.response.SplitResultResponse;
 import com.raje.smartsplit.entity.Participant;
 import com.raje.smartsplit.entity.SplitGroup;
+import com.raje.smartsplit.entity.SplitResult;
 import com.raje.smartsplit.entity.User;
 import com.raje.smartsplit.exception.NotParticipantException;
 import com.raje.smartsplit.repository.ParticipantRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
 public class ParticipantService {
 
     private final ParticipantRepository participantRepository;
-    private final SplitGroupService groupService;
+    private final SplitResultService splitResultService;
 
     @Autowired
-    public ParticipantService(ParticipantRepository participantRepository, SplitGroupService groupService) {
+    public ParticipantService(ParticipantRepository participantRepository, SplitResultService splitResultService) {
         this.participantRepository = participantRepository;
-        this.groupService = groupService;
+        this.splitResultService = splitResultService;
     }
 
     public Participant findByGroupIdAndUserId(Long groupId, Long userId) {
@@ -37,11 +44,18 @@ public class ParticipantService {
         return optional.get();
     }
 
-    public Participant updateSplitShare(Long participantId, Double splitShare, User currentUser) {
+    @Transactional
+    public ParticipantSplitGroupResponse updateSplitShare(Long participantId, Double splitShare, User currentUser) {
         Participant participant = findById(participantId);
         if(currentUserIsParticipant(participant, currentUser)) {
             participant.setSplitShare(splitShare);
-            return participantRepository.save(participant);
+            participantRepository.save(participant);
+            List<SplitResult> splitResults = splitResultService.updateSplitResult(participant.getSplitGroup());
+            List<SplitResultResponse> splitResultResponses = new ArrayList<>();
+            splitResults.forEach(sr -> {
+                splitResultResponses.add(new SplitResultResponse(sr));
+            });
+            return new ParticipantSplitGroupResponse(new ParticipantResponse(participant),splitResultResponses);
         } else {
             throw new RuntimeException("This user cannot change the share from another user.");
         }
