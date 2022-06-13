@@ -37,10 +37,10 @@ public class GroupManagementService {
     }
 
     @Transactional
-    public SplitGroupResponse participateInTheGroup(Long groupId) {
+    public SplitGroupResponse participateInTheGroup(Long groupId, Double splitShare) {
         User user = jwtUtils.getUserFromContext();
         SplitGroup group = groupService.getGroupById(groupId);
-        return groupService.addParticipantToGroup(user, group);
+        return groupService.addParticipantToGroup(user, group, splitShare);
     }
 
     @Transactional

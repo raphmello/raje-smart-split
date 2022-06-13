@@ -73,8 +73,9 @@ public class GroupManagementController {
 
     @PostMapping("/{id}/currentUser/enter")
     @Operation(summary = "Enter the group{id}")
-    public ResponseEntity<SplitGroupResponse> enterTheGroupById(@PathVariable(value = "id") Long groupId) {
-        SplitGroupResponse groupUpdated = groupManagementService.participateInTheGroup(groupId);
+    public ResponseEntity<SplitGroupResponse> enterTheGroupById(@PathVariable(value = "id") Long groupId,
+                                                                @RequestBody(required = false) Double splitShare) {
+        SplitGroupResponse groupUpdated = groupManagementService.participateInTheGroup(groupId, splitShare);
         return new ResponseEntity<>(groupUpdated, HttpStatus.CREATED);
     }
 

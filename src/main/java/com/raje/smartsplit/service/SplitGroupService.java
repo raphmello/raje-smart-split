@@ -71,21 +71,27 @@ public class SplitGroupService {
     }
 
     public SplitGroupResponse addParticipantToGroup(User user, SplitGroup splitGroup) {
-        SplitGroup entity = addParticipant(user, splitGroup);
+        SplitGroup entity = addParticipant(user, splitGroup, 1.);
         return new SplitGroupResponse(entity);
     }
 
-    private SplitGroup addParticipant(User user, SplitGroup splitGroup) {
-        Participant participant = createParticipant(user, splitGroup);
+    public SplitGroupResponse addParticipantToGroup(User user, SplitGroup splitGroup, Double splitShare) {
+        SplitGroup entity = addParticipant(user, splitGroup, splitShare);
+        return new SplitGroupResponse(entity);
+    }
+
+    private SplitGroup addParticipant(User user, SplitGroup splitGroup, Double splitShare) {
+        Participant participant = createParticipant(user, splitGroup, splitShare);
         splitGroup.addParticipant(participant);
         participantRepository.save(participant);
         return splitGroupRepository.save(splitGroup);
     }
 
-    private Participant createParticipant(User user, SplitGroup splitGroup) {
+    private Participant createParticipant(User user, SplitGroup splitGroup, Double splitShare) {
         Participant participant = new Participant();
         participant.setUser(user);
         participant.setSplitGroup(splitGroup);
+        participant.setSplitShare(splitShare);
         return participant;
     }
 
