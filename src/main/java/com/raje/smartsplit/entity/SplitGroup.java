@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -29,7 +31,8 @@ public class SplitGroup {
     @ManyToOne
     private User creator;
 
-    @OneToMany(mappedBy = "splitGroup",fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "splitGroup",fetch = FetchType.EAGER)
+    @Fetch(FetchMode.SELECT)
     private List<Participant> participants = new ArrayList<>();
 
     @OneToMany(mappedBy = "splitGroup")
