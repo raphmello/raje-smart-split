@@ -54,7 +54,7 @@ public class ParticipantController {
     public ResponseEntity<ParticipantSplitGroupResponse> updateSplitShareForCurrentParticipant(@PathVariable("id") Long participantId,
                                                                                                  @RequestBody Double splitShare) {
         User currentUser = jwtUtils.getUserFromContext();
-        ParticipantSplitGroupResponse participantSplitGroupResponse = participantService.updateSplitShare(participantId, splitShare, currentUser);
+        ParticipantSplitGroupResponse participantSplitGroupResponse = splitResultService.updateSplitShare(participantId, splitShare, currentUser);
         return new ResponseEntity<>(participantSplitGroupResponse, HttpStatus.OK);
     }
 

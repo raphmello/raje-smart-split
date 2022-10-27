@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.math.BigInteger;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class SplitResultService {
@@ -90,12 +91,10 @@ public class SplitResultService {
     }
 
     private List<SplitResult> generateSplitResults(SplitGroup group, Set<BillCategory> groupCategories) {
-        List<SplitResult> splitResults = new ArrayList<>();
-        groupCategories.forEach(category -> {
-            List<SplitResult> partialList = calculatesDebtorsAndCreditorsByCategory(group, category);
-            splitResults.addAll(partialList);
-        });
-        return splitResults;
+        return groupCategories.stream()
+                .map(category -> calculatesDebtorsAndCreditorsByCategory(group, category))
+                .flatMap(Collection::stream)
+                .collect(Collectors.toList());
     }
 
     public List<SplitResult> updateSplitResult(Long groupId) {
@@ -134,6 +133,27 @@ public class SplitResultService {
             dataDebtors.add(dataDebtor);
         }
         return dataDebtors;
+    }
+
+    @Transactional
+    public ParticipantSplitGroupResponse updateSplitShare(Long participantId, Double splitShare, User currentUser) {
+        Participant participant = participantService.findById(participantId);
+        if(currentUserIsParticipant(participant, currentUser)) {
+            participant.setSplitShare(splitShare);
+            participantRepository.save(participant);
+            List<SplitResult> splitResults = updateSplitResult(participant.getSplitGroup());
+            List<SplitResultResponse> splitResultResponses = new ArrayList<>();
+            splitResults.forEach(sr -> {
+                splitResultResponses.add(new SplitResultResponse(sr));
+            });
+            return new ParticipantSplitGroupResponse(new ParticipantResponse(participant),splitResultResponses);
+        } else {
+            throw new RuntimeException("This user cannot change the share from another user.");
+        }
+    }
+
+    private boolean currentUserIsParticipant(Participant participant, User currentUser) {
+        return participant.getUser().equals(currentUser);
     }
 
 }

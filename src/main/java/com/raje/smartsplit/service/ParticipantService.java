@@ -21,12 +21,10 @@ import java.util.Optional;
 public class ParticipantService {
 
     private final ParticipantRepository participantRepository;
-    private final SplitResultService splitResultService;
 
     @Autowired
-    public ParticipantService(ParticipantRepository participantRepository, SplitResultService splitResultService) {
+    public ParticipantService(ParticipantRepository participantRepository) {
         this.participantRepository = participantRepository;
-        this.splitResultService = splitResultService;
     }
 
     public Participant findByGroupIdAndUserId(Long groupId, Long userId) {
@@ -42,27 +40,6 @@ public class ParticipantService {
         if (optional.isEmpty())
             throw new NotParticipantException();
         return optional.get();
-    }
-
-    @Transactional
-    public ParticipantSplitGroupResponse updateSplitShare(Long participantId, Double splitShare, User currentUser) {
-        Participant participant = findById(participantId);
-        if(currentUserIsParticipant(participant, currentUser)) {
-            participant.setSplitShare(splitShare);
-            participantRepository.save(participant);
-            List<SplitResult> splitResults = splitResultService.updateSplitResult(participant.getSplitGroup());
-            List<SplitResultResponse> splitResultResponses = new ArrayList<>();
-            splitResults.forEach(sr -> {
-                splitResultResponses.add(new SplitResultResponse(sr));
-            });
-            return new ParticipantSplitGroupResponse(new ParticipantResponse(participant),splitResultResponses);
-        } else {
-            throw new RuntimeException("This user cannot change the share from another user.");
-        }
-    }
-
-    private boolean currentUserIsParticipant(Participant participant, User currentUser) {
-        return participant.getUser().equals(currentUser);
     }
 
     public Participant findById(Long participantId) {

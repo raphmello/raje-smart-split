@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/splitResult")
@@ -28,10 +29,10 @@ public class SplitResultController {
     @GetMapping("/update/group/{id}")
     public ResponseEntity<List<SplitResultResponse>> updateSplitResult(@PathVariable("id") Long groupId) {
         List<SplitResult> resultList = splitResultService.updateSplitResult(groupId);
-        List<SplitResultResponse> responseList = new ArrayList<>();
-        resultList.forEach(r -> {
-            responseList.add(new SplitResultResponse(r));
-        });
+        List<SplitResultResponse> responseList = resultList.stream()
+                .map(SplitResultResponse::new)
+                .collect(Collectors.toList());
+
         return new ResponseEntity<>(responseList, HttpStatus.OK);
     }
 }
