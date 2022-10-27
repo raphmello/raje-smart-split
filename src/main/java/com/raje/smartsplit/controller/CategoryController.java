@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/category")
@@ -33,10 +34,9 @@ public class CategoryController {
     @Operation(summary = "Retrieve all categories")
     public ResponseEntity<Set<BillCategoryResponse>> getAllCategories() {
         Set<BillCategory> categories = categoryService.findAll();
-        Set<BillCategoryResponse> responseList = new HashSet<>();
-        categories.forEach(c -> {
-            responseList.add(new BillCategoryResponse(c));
-        });
+        Set<BillCategoryResponse> responseList = categories.stream()
+                .map(BillCategoryResponse::new)
+                .collect(Collectors.toSet());
         return new ResponseEntity<>(responseList, HttpStatus.OK);
     }
 
@@ -44,10 +44,9 @@ public class CategoryController {
     @Operation(summary = "Retrieve all categories from bills by group{id}")
     public ResponseEntity<Set<BillCategoryResponse>> getAllCategoriesByGroupId(@PathVariable("id") Long groupId) {
         Set<BillCategory> categories = categoryService.findAllByGroupId(groupId);
-        Set<BillCategoryResponse> responseList = new HashSet<>();
-        categories.forEach(c -> {
-            responseList.add(new BillCategoryResponse(c));
-        });
+        Set<BillCategoryResponse> responseList = categories.stream()
+                .map(BillCategoryResponse::new)
+                .collect(Collectors.toSet());
         return new ResponseEntity<>(responseList, HttpStatus.OK);
     }
 }

@@ -14,8 +14,10 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class SplitGroupService {
@@ -51,23 +53,21 @@ public class SplitGroupService {
 
     public SplitGroupResponse getGroupResponseByIdAndCurrentUser(Long groupId, Long userId) {
         Optional<SplitGroup> optional = splitGroupRepository.findByGroupIdAndParticipant(groupId, userId);
-        if (optional.isEmpty())
-            throw new GroupNotFountException("Group not found.");
-        return new SplitGroupResponse(optional.get());
+
+        SplitGroup group = optional.orElseThrow(() -> new GroupNotFountException("Group not found."));
+
+        return new SplitGroupResponse(group);
     }
 
     public SplitGroup getGroupByIdAndCurrentUser(Long groupId, Long userId) {
         Optional<SplitGroup> optional = splitGroupRepository.findByGroupIdAndParticipant(groupId, userId);
-        if (optional.isEmpty())
-            throw new GroupNotFountException("Group not found.");
-        return optional.get();
+
+        return optional.orElseThrow(() -> new GroupNotFountException("Group not found."));
     }
 
     public SplitGroup getGroupById(Long groupId) {
         Optional<SplitGroup> optional = splitGroupRepository.findById(groupId);
-        if (optional.isEmpty())
-            throw new GroupNotFountException("Group not found.");
-        return optional.get();
+        return optional.orElseThrow(() -> new GroupNotFountException("Group not found."));
     }
 
     public SplitGroupResponse addParticipantToGroup(User user, SplitGroup splitGroup) {
@@ -128,25 +128,29 @@ public class SplitGroupService {
     }
 
     public SplitGroupTotals getTotalAmountAndTotalShareForCategory(SplitGroup group, BillCategory category) {
-        List<Double> groupShareList = new ArrayList<>();
-        List<Double> groupAmountList = new ArrayList<>();
-        group.getParticipants().forEach(participant -> {
-            Double share = participant.getSplitShare();
-            if (participantWantsToShareThisCategory(category, participant)) {
-                groupShareList.add(share);
-            }
-            for (Bill bill : participant.getBills()) {
-                if(bill.getCategory().equals(category)) {
-                    final Double billAmount = bill.getAmount();
-                    groupAmountList.add(billAmount);
-                }
-            }
-        });
 
-        double groupTotalShareSum = groupShareList.stream().mapToDouble(Double::doubleValue).sum();
-        double groupTotalAmountSum = groupAmountList.stream().mapToDouble(Double::doubleValue).sum();
+        List<Double> groupShareFractionList = group.getParticipants().stream()
+                .filter(participant -> participantWantsToShareThisCategory(category, participant))
+                .map(Participant::getSplitShare)
+                .collect(Collectors.toList());
+
+        List<Double> groupAmountListByCategory = group.getParticipants().stream()
+                .map(Participant::getBills)
+                .map(bills -> retrieveBillValuesByCategory(category, bills))
+                .flatMap(Collection::stream)
+                .collect(Collectors.toList());
+
+        double groupTotalShareSum = groupShareFractionList.stream().mapToDouble(Double::doubleValue).sum();
+        double groupTotalAmountSum = groupAmountListByCategory.stream().mapToDouble(Double::doubleValue).sum();
 
         return new SplitGroupTotals(groupTotalAmountSum, groupTotalShareSum);
+    }
+
+    private List<Double> retrieveBillValuesByCategory(BillCategory category, List<Bill> bills) {
+        return bills.stream()
+                .filter(bill -> bill.getCategory().equals(category))
+                .map(Bill::getAmount)
+                .collect(Collectors.toList());
     }
 
     public boolean participantWantsToShareThisCategory(BillCategory category, Participant participant) {

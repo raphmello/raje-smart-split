@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("api/group")
@@ -42,8 +43,9 @@ public class GroupManagementController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<SplitGroupSimpleResponse>> getAllGroups() {
         List<SplitGroup> entityList = groupService.findAll();
-        List<SplitGroupSimpleResponse> responseList = new ArrayList<>();
-        entityList.forEach(group -> responseList.add(new SplitGroupSimpleResponse(group)));
+        List<SplitGroupSimpleResponse> responseList = entityList.stream()
+                .map(SplitGroupSimpleResponse::new)
+                .collect(Collectors.toList());
         return new ResponseEntity<>(responseList, HttpStatus.OK);
     }
 
@@ -51,8 +53,9 @@ public class GroupManagementController {
     @Operation(summary = "Retrieve all groups from current user (only id and name, not bills and participants)")
     public ResponseEntity<List<SplitGroupSimpleResponse>> getAllGroupsFromCurrentUser() {
         List<SplitGroup> entityList = groupService.findAllGroupsByUsername();
-        List<SplitGroupSimpleResponse> responseList = new ArrayList<>();
-        entityList.forEach(group -> responseList.add(new SplitGroupSimpleResponse(group)));
+        List<SplitGroupSimpleResponse> responseList = entityList.stream()
+                .map(SplitGroupSimpleResponse::new)
+                .collect(Collectors.toList());
         return new ResponseEntity<>(responseList, HttpStatus.OK);
     }
 

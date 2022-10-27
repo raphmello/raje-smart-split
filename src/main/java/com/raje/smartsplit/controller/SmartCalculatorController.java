@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/calculator")
@@ -29,10 +30,9 @@ public class SmartCalculatorController {
     public ResponseEntity<List<SplitSimplificationResponse>> simplify(@PathVariable("id") Long groupId,
                                                                       Boolean overwrite) {
         List<SplitSimplificationResult> resultList = smartCalculatorService.simplifySplit(groupId, overwrite);
-        List<SplitSimplificationResponse> responseList = new ArrayList<>();
-        resultList.forEach(r -> {
-            responseList.add(new SplitSimplificationResponse(r));
-        });
+        List<SplitSimplificationResponse> responseList = resultList.stream()
+                .map(SplitSimplificationResponse::new)
+                .collect(Collectors.toList());
         return new ResponseEntity<>(responseList, HttpStatus.OK);
     }
 }
