@@ -29,7 +29,7 @@ public class SplitGroup {
     @ManyToOne
     private User creator;
 
-    @OneToMany(mappedBy = "splitGroup",fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "splitGroup",fetch = FetchType.LAZY)
     private List<Participant> participants = new ArrayList<>();
 
     @OneToMany(mappedBy = "splitGroup")
