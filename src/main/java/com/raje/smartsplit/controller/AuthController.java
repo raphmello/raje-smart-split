@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -70,9 +71,23 @@ public class AuthController {
 
         GoogleUser googleUser = googleAuthService.validateGoogleToken(loginRequest.getIdToken());
 
+        Optional<User> user = userRepository.findByUsername(googleUser.getEmail());
+
+        if (user.isEmpty()) {
+            signUpIfUserNotFound(googleUser);
+        }
+
+
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(googleUser.getEmail(), EMPTY));
         return createResponseWithJwt(authentication);
+    }
+
+    private void signUpIfUserNotFound(GoogleUser googleUser) {
+        User user = new User(googleUser.getEmail(),
+                googleUser.getEmail(),
+                encoder.encode(googleUser.getUserId()));
+        registerNewUser(user, Set.of("user"));
     }
 
     private ResponseEntity<?> createResponseWithJwt(Authentication authentication) {
@@ -94,18 +109,19 @@ public class AuthController {
         if (userRepository.existsByUsername(signUpRequest.getEmail())) {
             return ResponseEntity
                     .badRequest()
-                    .body(new MessageResponse("Error: Username is already taken!"));
+                    .body(new MessageResponse("Error: Email is already registered!"));
         }
-        if (userRepository.existsByEmail(signUpRequest.getEmail())) {
-            return ResponseEntity
-                    .badRequest()
-                    .body(new MessageResponse("Error: Email is already in use!"));
-        }
+
         // Create new user's account
         User user = new User(signUpRequest.getEmail(),
                 signUpRequest.getEmail(),
                 encoder.encode(signUpRequest.getPassword()));
         Set<String> strRoles = signUpRequest.getRole();
+        registerNewUser(user, strRoles);
+        return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
+    }
+
+    private void registerNewUser(User user, Set<String> strRoles) {
         Set<Role> roles = new HashSet<>();
         if (strRoles == null) {
             Role userRole = roleRepository.findByName(ERole.ROLE_USER)
@@ -133,6 +149,5 @@ public class AuthController {
         }
         user.setRoles(roles);
         userRepository.save(user);
-        return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
     }
 }
