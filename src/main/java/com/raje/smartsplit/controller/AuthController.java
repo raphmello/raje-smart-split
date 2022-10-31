@@ -67,7 +67,7 @@ public class AuthController {
     }
 
     @PostMapping("/signin/google")
-    public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginGoogleRequest loginRequest) {
+    public ResponseEntity<?> authenticateUserWithGoogle(@Valid @RequestBody LoginGoogleRequest loginRequest) {
 
         GoogleUser googleUser = googleAuthService.validateGoogleToken(loginRequest.getIdToken());
 
