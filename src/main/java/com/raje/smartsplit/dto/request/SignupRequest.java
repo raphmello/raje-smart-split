@@ -1,5 +1,6 @@
 package com.raje.smartsplit.dto.request;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,12 +13,9 @@ import java.util.Set;
 @Setter
 public class SignupRequest {
     @NotBlank
-    @Size(min = 3, max = 20)
-    private String username;
-
-    @NotBlank
     @Size(max = 50)
     @Email
+    @JsonAlias(value = "username")
     private String email;
 
     private Set<String> role;
