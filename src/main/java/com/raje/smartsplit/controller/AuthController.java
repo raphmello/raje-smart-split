@@ -77,9 +77,8 @@ public class AuthController {
             signUpIfUserNotFound(googleUser);
         }
 
-
         Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(googleUser.getEmail(), EMPTY));
+                new UsernamePasswordAuthenticationToken(googleUser.getEmail(), googleUser.getUserId()));
         return createResponseWithJwt(authentication);
     }
 
