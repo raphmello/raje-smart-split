@@ -5,6 +5,7 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.gson.GsonFactory;
 import com.raje.smartsplit.dto.auth.GoogleUser;
+import com.raje.smartsplit.exception.GoogleIdTokenException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -45,7 +46,7 @@ public class GoogleAuthService {
                     .build();
         } else {
             logger.error("m=validateGoogleToken label=idToken IS NULL");
-            throw new RuntimeException("idToken is null: Not possible to validate Google token ");
+            throw new GoogleIdTokenException();
         }
     }
 
