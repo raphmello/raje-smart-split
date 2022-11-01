@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.Collections;
 
 @Service
@@ -19,11 +20,14 @@ public class GoogleAuthService {
     Logger logger = LoggerFactory.getLogger(GoogleAuthService.class);
 
     @Value("${google.sso.client.id.ios}")
-    private String CLIENT_ID;
+    private String CLIENT_ID_IOS;
+
+    @Value("${google.sso.client.id.web}")
+    private String CLIENT_ID_WEB;
 
     public GoogleUser validateGoogleToken(String idTokenString) {
         GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(new NetHttpTransport(), new GsonFactory())
-                .setAudience(Collections.singletonList(CLIENT_ID))
+                .setAudience(Arrays.asList(CLIENT_ID_IOS, CLIENT_ID_WEB))
                 .build();
 
         final GoogleIdToken idToken = getGoogleIdToken(idTokenString, verifier);;
