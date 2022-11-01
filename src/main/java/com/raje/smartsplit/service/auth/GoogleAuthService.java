@@ -55,7 +55,7 @@ public class GoogleAuthService {
             return verifier.verify(idTokenString);
         } catch (Exception e) {
             logger.error("m=validateGoogleToken idTokenString={}", idTokenString);
-            throw new RuntimeException("Not possible to validate Google idToken");
+            throw new GoogleIdTokenException();
         }
     }
 }
