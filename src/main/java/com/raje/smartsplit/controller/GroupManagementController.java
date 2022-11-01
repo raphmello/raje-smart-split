@@ -3,6 +3,7 @@ package com.raje.smartsplit.controller;
 import com.raje.smartsplit.config.SecurityConfig.JwtUtils;
 import com.raje.smartsplit.dto.request.CreateBillRequest;
 import com.raje.smartsplit.dto.request.CreateSplitGroupRequest;
+import com.raje.smartsplit.dto.request.SplitShareRequest;
 import com.raje.smartsplit.dto.response.SplitGroupResponse;
 import com.raje.smartsplit.dto.response.SplitGroupSimpleResponse;
 import com.raje.smartsplit.dto.response.SplitGroupSplitResultResponse;
@@ -76,13 +77,9 @@ public class GroupManagementController {
     @PostMapping("/{id}/currentUser/enter")
     @Operation(summary = "Enter the group{id}")
     public ResponseEntity<SplitGroupResponse> enterTheGroupById(@PathVariable(value = "id") final Long groupId,
-                                                                @RequestBody(required = false) final Double splitShare) {
-        SplitGroupResponse groupUpdated = groupManagementService.participateInTheGroup(groupId, getSplitShareIfNull(splitShare));
+                                                                @RequestBody(required = false) final SplitShareRequest splitShareRequest) {
+        SplitGroupResponse groupUpdated = groupManagementService.participateInTheGroup(groupId, splitShareRequest.getSplitShare());
         return new ResponseEntity<>(groupUpdated, HttpStatus.CREATED);
-    }
-
-    private double getSplitShareIfNull(Double splitShare) {
-        return splitShare == null ? 1 : splitShare;
     }
 
     @DeleteMapping("/{id}/currentUser/exit")
