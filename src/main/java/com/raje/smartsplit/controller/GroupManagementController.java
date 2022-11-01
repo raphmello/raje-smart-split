@@ -18,7 +18,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -76,10 +75,14 @@ public class GroupManagementController {
 
     @PostMapping("/{id}/currentUser/enter")
     @Operation(summary = "Enter the group{id}")
-    public ResponseEntity<SplitGroupResponse> enterTheGroupById(@PathVariable(value = "id") Long groupId,
-                                                                @RequestBody(required = false) Double splitShare) {
-        SplitGroupResponse groupUpdated = groupManagementService.participateInTheGroup(groupId, splitShare);
+    public ResponseEntity<SplitGroupResponse> enterTheGroupById(@PathVariable(value = "id") final Long groupId,
+                                                                @RequestBody(required = false) final Double splitShare) {
+        SplitGroupResponse groupUpdated = groupManagementService.participateInTheGroup(groupId, getSplitShareIfNull(splitShare));
         return new ResponseEntity<>(groupUpdated, HttpStatus.CREATED);
+    }
+
+    private double getSplitShareIfNull(Double splitShare) {
+        return splitShare == null ? 1 : splitShare;
     }
 
     @DeleteMapping("/{id}/currentUser/exit")

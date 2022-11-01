@@ -43,7 +43,7 @@ public class SplitResultService {
 
         group.getParticipants()
                 .forEach(participant -> {
-                    if(groupService.participantWantsToShareThisCategory(category, participant)) {
+                    if(groupService.participantWantsToShareThisCategory(category, participant) && participant.getSplitShare() > 0) {
                         Double splitValue = calculateAmountShareForParticipant(participant, totals.getTotalAmount(), totals.getTotalShare());
                         double valueBalance = participant.getTotalSpentByCategory(category) - splitValue;
                         if (valueBalance != 0) {
