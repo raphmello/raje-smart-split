@@ -1,6 +1,8 @@
 package com.raje.smartsplit.controller;
 
 import com.raje.smartsplit.config.SecurityConfig.JwtUtils;
+import com.raje.smartsplit.dto.auth.GoogleUser;
+import com.raje.smartsplit.dto.request.LoginGoogleRequest;
 import com.raje.smartsplit.dto.request.LoginRequest;
 import com.raje.smartsplit.dto.request.SignupRequest;
 import com.raje.smartsplit.dto.response.JwtResponse;
@@ -11,6 +13,7 @@ import com.raje.smartsplit.entity.UserDetailsImpl;
 import com.raje.smartsplit.enums.ERole;
 import com.raje.smartsplit.repository.RoleRepository;
 import com.raje.smartsplit.repository.UserRepository;
+import com.raje.smartsplit.service.auth.GoogleAuthService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +28,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -39,20 +43,51 @@ public class AuthController {
     private final RoleRepository roleRepository;
     private final PasswordEncoder encoder;
     private final JwtUtils jwtUtils;
+    private final GoogleAuthService googleAuthService;
 
     @Autowired
-    public AuthController(AuthenticationManager authenticationManager, UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder encoder, JwtUtils jwtUtils) {
+    public AuthController(AuthenticationManager authenticationManager, UserRepository userRepository,
+                          RoleRepository roleRepository, PasswordEncoder encoder,
+                          JwtUtils jwtUtils, GoogleAuthService googleAuthService) {
         this.authenticationManager = authenticationManager;
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.encoder = encoder;
         this.jwtUtils = jwtUtils;
+        this.googleAuthService = googleAuthService;
     }
 
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
         Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
+                new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
+        return createResponseWithJwt(authentication);
+    }
+
+    @PostMapping("/signin/google")
+    public ResponseEntity<?> authenticateUserWithGoogle(@Valid @RequestBody LoginGoogleRequest loginRequest) {
+
+        GoogleUser googleUser = googleAuthService.validateGoogleToken(loginRequest.getIdToken());
+
+        Optional<User> user = userRepository.findByUsername(googleUser.getEmail());
+
+        if (user.isEmpty()) {
+            signUpIfUserNotFound(googleUser);
+        }
+
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(googleUser.getEmail(), googleUser.getUserId()));
+        return createResponseWithJwt(authentication);
+    }
+
+    private void signUpIfUserNotFound(GoogleUser googleUser) {
+        User user = new User(googleUser.getEmail(),
+                googleUser.getEmail(),
+                encoder.encode(googleUser.getUserId()));
+        registerNewUser(user, Set.of("user"));
+    }
+
+    private ResponseEntity<?> createResponseWithJwt(Authentication authentication) {
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = jwtUtils.generateJwtToken(authentication);
 
@@ -63,26 +98,27 @@ public class AuthController {
         return ResponseEntity.ok(new JwtResponse(jwt,
                 userDetails.getId(),
                 userDetails.getUsername(),
-                userDetails.getEmail(),
                 roles));
     }
+
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
-        if (userRepository.existsByUsername(signUpRequest.getUsername())) {
+        if (userRepository.existsByUsername(signUpRequest.getEmail())) {
             return ResponseEntity
                     .badRequest()
-                    .body(new MessageResponse("Error: Username is already taken!"));
+                    .body(new MessageResponse("Error: Email is already registered!"));
         }
-        if (userRepository.existsByEmail(signUpRequest.getEmail())) {
-            return ResponseEntity
-                    .badRequest()
-                    .body(new MessageResponse("Error: Email is already in use!"));
-        }
+
         // Create new user's account
-        User user = new User(signUpRequest.getUsername(),
+        User user = new User(signUpRequest.getEmail(),
                 signUpRequest.getEmail(),
                 encoder.encode(signUpRequest.getPassword()));
         Set<String> strRoles = signUpRequest.getRole();
+        registerNewUser(user, strRoles);
+        return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
+    }
+
+    private void registerNewUser(User user, Set<String> strRoles) {
         Set<Role> roles = new HashSet<>();
         if (strRoles == null) {
             Role userRole = roleRepository.findByName(ERole.ROLE_USER)
@@ -110,6 +146,5 @@ public class AuthController {
         }
         user.setRoles(roles);
         userRepository.save(user);
-        return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
     }
 }

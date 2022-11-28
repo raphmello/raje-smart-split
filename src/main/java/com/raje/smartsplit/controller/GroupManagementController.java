@@ -3,6 +3,7 @@ package com.raje.smartsplit.controller;
 import com.raje.smartsplit.config.SecurityConfig.JwtUtils;
 import com.raje.smartsplit.dto.request.CreateBillRequest;
 import com.raje.smartsplit.dto.request.CreateSplitGroupRequest;
+import com.raje.smartsplit.dto.request.SplitShareRequest;
 import com.raje.smartsplit.dto.response.SplitGroupResponse;
 import com.raje.smartsplit.dto.response.SplitGroupSimpleResponse;
 import com.raje.smartsplit.dto.response.SplitGroupSplitResultResponse;
@@ -18,7 +19,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -76,9 +76,9 @@ public class GroupManagementController {
 
     @PostMapping("/{id}/currentUser/enter")
     @Operation(summary = "Enter the group{id}")
-    public ResponseEntity<SplitGroupResponse> enterTheGroupById(@PathVariable(value = "id") Long groupId,
-                                                                @RequestBody(required = false) Double splitShare) {
-        SplitGroupResponse groupUpdated = groupManagementService.participateInTheGroup(groupId, splitShare);
+    public ResponseEntity<SplitGroupResponse> enterTheGroupById(@PathVariable(value = "id") final Long groupId,
+                                                                @RequestBody(required = false) final SplitShareRequest splitShareRequest) {
+        SplitGroupResponse groupUpdated = groupManagementService.participateInTheGroup(groupId, splitShareRequest.getSplitShare());
         return new ResponseEntity<>(groupUpdated, HttpStatus.CREATED);
     }
 
