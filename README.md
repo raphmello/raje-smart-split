@@ -15,5 +15,8 @@ mvn clean install
 mvn -Pprod clean install
 ```
 
+## SWAGGER
+http://localhost:8080/swagger-ui/index.html
+
 ## EC2 POSTGRES
 docker run -p 5432:5432 -v /home/postgres:/var/lib/postgresql/data -e POSTGRES_PASSWORD=1234 -d postgres
