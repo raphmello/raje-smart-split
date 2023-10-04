@@ -6,11 +6,14 @@
 ## DEV
 - Build
 ```
-mvn clean instal
+mvn clean install
 ```
 
 ## PROD
 - Build
 ```
-mvn -Pprod clean instal
+mvn -Pprod clean install
 ```
+
+## EC2 POSTGRES
+docker run -p 5432:5432 -v /home/postgres:/var/lib/postgresql/data -e POSTGRES_PASSWORD=1234 -d postgres
