@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.raje</groupId>
 	<artifactId>smartsplit</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0.0</version>
 	<name>smartsplit</name>
 	<description>SmartSplit</description>
 	<properties>
