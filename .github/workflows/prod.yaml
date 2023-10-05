@@ -28,3 +28,13 @@ jobs:
 
       - name: Push image docker
         run: docker push raphmello/smartsplit
+
+  deploy:
+    needs: build
+    runs-on: self-hosted
+    steps:
+      - name: Pull image from docker hub
+        run: docker pull raphmello/smartsplit:latest
+
+      - name: Run docker container
+        run: docker run -d -p 8080:8080 --name smartsplit raphmello/smartsplit
