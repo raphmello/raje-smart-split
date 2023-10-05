@@ -36,5 +36,8 @@ jobs:
       - name: Pull image from docker hub
         run: docker pull raphmello/smartsplit:latest
 
+      - name: Remove docker container
+        run: docker rm -f samrtsplit
+
       - name: Run docker container
         run: docker run -d -p 8080:8080 --name smartsplit raphmello/smartsplit
