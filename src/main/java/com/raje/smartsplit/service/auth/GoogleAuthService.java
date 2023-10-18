@@ -16,20 +16,20 @@ import java.util.Arrays;
 @Service
 public class GoogleAuthService {
 
-    Logger logger = LoggerFactory.getLogger(GoogleAuthService.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(GoogleAuthService.class);
 
     @Value("${google.sso.client.id.ios}")
-    private String CLIENT_ID_IOS;
+    private String clientIdIos;
 
     @Value("${google.sso.client.id.web}")
-    private String CLIENT_ID_WEB;
+    private String clientIdWeb;
 
     public GoogleUser validateGoogleToken(String idTokenString) {
         GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(new NetHttpTransport(), new GsonFactory())
-                .setAudience(Arrays.asList(CLIENT_ID_IOS, CLIENT_ID_WEB))
+                .setAudience(Arrays.asList(clientIdIos, clientIdWeb))
                 .build();
 
-        final GoogleIdToken idToken = getGoogleIdToken(idTokenString, verifier);;
+        final GoogleIdToken idToken = getGoogleIdToken(idTokenString, verifier);
 
         if (idToken != null) {
             GoogleIdToken.Payload payload = idToken.getPayload();
@@ -48,7 +48,7 @@ public class GoogleAuthService {
                     .givenName((String) payload.get("given_name"))
                     .build();
         } else {
-            logger.error("m=validateGoogleToken label=idToken IS NULL");
+            LOGGER.error("m=validateGoogleToken label=idToken IS NULL");
             throw new GoogleIdTokenException();
         }
     }
@@ -57,7 +57,7 @@ public class GoogleAuthService {
         try {
             return verifier.verify(idTokenString);
         } catch (Exception e) {
-            logger.error("m=validateGoogleToken idTokenString={}", idTokenString);
+            LOGGER.error("m=validateGoogleToken idTokenString={}", idTokenString);
             throw new GoogleIdTokenException();
         }
     }

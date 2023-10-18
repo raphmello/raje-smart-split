@@ -20,8 +20,9 @@ public class CategoryService {
 
     public BillCategory findById(Long categoryId) {
         Optional<BillCategory> optional = repository.findById(categoryId);
-        if (optional.isEmpty())
+        if (optional.isEmpty()) {
             throw new CategoryNotFoundException();
+        }
         return optional.get();
     }
 

@@ -15,6 +15,6 @@ public class SplitResultResponse {
         String participant = splitResult.getParticipant().getUser().getUsername();
         Double amount = splitResult.getAmount();
         String debtType = splitResult.getDebtType().getDescription();
-        this.result = String.format("%s %s R$ %.2f",participant, debtType, amount);
+        this.result = String.format("%s %s R$ %.2f", participant, debtType, amount);
     }
 }

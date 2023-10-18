@@ -4,7 +4,11 @@ import com.raje.smartsplit.config.SecurityConfig.JwtUtils;
 import com.raje.smartsplit.dto.partial.SplitGroupTotals;
 import com.raje.smartsplit.dto.request.CreateSplitGroupRequest;
 import com.raje.smartsplit.dto.response.SplitGroupResponse;
-import com.raje.smartsplit.entity.*;
+import com.raje.smartsplit.entity.Bill;
+import com.raje.smartsplit.entity.BillCategory;
+import com.raje.smartsplit.entity.Participant;
+import com.raje.smartsplit.entity.SplitGroup;
+import com.raje.smartsplit.entity.User;
 import com.raje.smartsplit.exception.GroupNotFountException;
 import com.raje.smartsplit.exception.NotAllowedToExitException;
 import com.raje.smartsplit.repository.ParticipantRepository;
@@ -28,7 +32,11 @@ public class SplitGroupService {
     private final JwtUtils jwtUtils;
 
     @Autowired
-    public SplitGroupService(SplitGroupRepository splitGroupRepository, UserService userService, ParticipantRepository participantRepository, ParticipantService participantService, JwtUtils jwtUtils) {
+    public SplitGroupService(SplitGroupRepository splitGroupRepository,
+                             UserService userService,
+                             ParticipantRepository participantRepository,
+                             ParticipantService participantService,
+                             JwtUtils jwtUtils) {
         this.splitGroupRepository = splitGroupRepository;
         this.userService = userService;
         this.participantRepository = participantRepository;
@@ -108,8 +116,9 @@ public class SplitGroupService {
         SplitGroup group = getGroupByIdAndCurrentUser(groupId, userId);
         User currentUser = jwtUtils.getUserFromContext();
 
-        if (userIsTheOwner(group, currentUser))
+        if (userIsTheOwner(group, currentUser)) {
             throw new NotAllowedToExitException();
+        }
 
         removeCurrentUserFromGroup(groupId, group, currentUser);
     }

@@ -5,8 +5,20 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.*;
-import java.util.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @AllArgsConstructor
@@ -14,6 +26,7 @@ import java.util.*;
 @Getter
 @Setter
 public class Participant {
+    public static final int HASH_NUMBER = 31;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -34,8 +47,12 @@ public class Participant {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Participant)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Participant)) {
+            return false;
+        }
 
         Participant that = (Participant) o;
 
@@ -45,7 +62,7 @@ public class Participant {
     @Override
     public int hashCode() {
         int result = splitGroup != null ? splitGroup.hashCode() : 0;
-        result = 31 * result + (user != null ? user.hashCode() : 0);
+        result = HASH_NUMBER * result + (user != null ? user.hashCode() : 0);
         return result;
     }
 
@@ -70,7 +87,7 @@ public class Participant {
     public List<Double> getTotalByCategory(BillCategory category) {
         List<Double> amountList = new ArrayList<>();
         for (Bill bill : this.getBills()) {
-            if(bill.getCategory().equals(category)) {
+            if (bill.getCategory().equals(category)) {
                 final Double billAmount = bill.getAmount();
                 amountList.add(billAmount);
             }

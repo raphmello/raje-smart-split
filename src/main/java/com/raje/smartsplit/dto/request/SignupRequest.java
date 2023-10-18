@@ -12,8 +12,11 @@ import java.util.Set;
 @Getter
 @Setter
 public class SignupRequest {
+    public static final int USERNAME_LENGTH = 50;
+    public static final int MIN_PASSWORD_LENGTH = 6;
+    public static final int MAX_PASSWORD_LENGTH = 40;
     @NotBlank
-    @Size(max = 50)
+    @Size(max = USERNAME_LENGTH)
     @Email
     @JsonAlias(value = "username")
     private String email;
@@ -21,6 +24,6 @@ public class SignupRequest {
     private Set<String> role;
 
     @NotBlank
-    @Size(min = 6, max = 40)
+    @Size(min = MIN_PASSWORD_LENGTH, max = MAX_PASSWORD_LENGTH)
     private String password;
 }

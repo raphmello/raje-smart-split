@@ -1,21 +1,17 @@
 package com.raje.smartsplit.controller;
 
-import com.raje.smartsplit.config.SecurityConfig.JwtUtils;
 import com.raje.smartsplit.dto.response.BillCategoryResponse;
-import com.raje.smartsplit.dto.response.ParticipantSplitGroupResponse;
 import com.raje.smartsplit.entity.BillCategory;
-import com.raje.smartsplit.entity.User;
 import com.raje.smartsplit.service.CategoryService;
-import com.raje.smartsplit.service.SplitGroupService;
-import com.raje.smartsplit.service.SplitResultService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 

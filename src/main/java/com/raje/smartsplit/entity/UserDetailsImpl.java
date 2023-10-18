@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 
 public class UserDetailsImpl implements UserDetails {
     private static final long serialVersionUID = 1L;
+    public static final int HASH_NUMBER = 31;
     private Long id;
     private String username;
     private String email;
@@ -73,11 +74,23 @@ public class UserDetailsImpl implements UserDetails {
     }
     @Override
     public boolean equals(Object o) {
-        if (this == o)
+        if (this == o) {
             return true;
-        if (o == null || getClass() != o.getClass())
+        }
+        if (o == null || getClass() != o.getClass()) {
             return false;
+        }
         UserDetailsImpl user = (UserDetailsImpl) o;
         return Objects.equals(id, user.id);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id != null ? id.hashCode() : 0;
+        result = HASH_NUMBER * result + username.hashCode();
+        result = HASH_NUMBER * result + email.hashCode();
+        result = HASH_NUMBER * result + password.hashCode();
+        result = HASH_NUMBER * result + (authorities != null ? authorities.hashCode() : 0);
+        return result;
     }
 }

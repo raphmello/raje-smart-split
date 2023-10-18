@@ -5,7 +5,11 @@ import com.raje.smartsplit.dto.response.ParticipantResponse;
 import com.raje.smartsplit.dto.response.ParticipantSplitGroupResponse;
 import com.raje.smartsplit.dto.response.SplitResultResponse;
 import com.raje.smartsplit.dto.utils.splitresult.DataDebtor;
-import com.raje.smartsplit.entity.*;
+import com.raje.smartsplit.entity.BillCategory;
+import com.raje.smartsplit.entity.Participant;
+import com.raje.smartsplit.entity.SplitGroup;
+import com.raje.smartsplit.entity.SplitResult;
+import com.raje.smartsplit.entity.User;
 import com.raje.smartsplit.enums.EDebtType;
 import com.raje.smartsplit.repository.ParticipantRepository;
 import com.raje.smartsplit.repository.SplitSimplificationResultRepository;
@@ -14,7 +18,12 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.math.BigInteger;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -27,7 +36,11 @@ public class SplitResultService {
     private final ParticipantService participantService;
     private final ParticipantRepository participantRepository;
 
-    public SplitResultService(SplitResultRepository splitResultRepository, SplitSimplificationResultRepository simplificationResultRepository, SplitGroupService groupService, CategoryService categoryService, ParticipantService participantService, ParticipantRepository participantRepository) {
+    public SplitResultService(SplitResultRepository splitResultRepository,
+                              SplitSimplificationResultRepository simplificationResultRepository,
+                              SplitGroupService groupService, CategoryService categoryService,
+                              ParticipantService participantService,
+                              ParticipantRepository participantRepository) {
         this.splitResultRepository = splitResultRepository;
         this.simplificationResultRepository = simplificationResultRepository;
         this.groupService = groupService;
@@ -43,7 +56,7 @@ public class SplitResultService {
 
         group.getParticipants()
                 .forEach(participant -> {
-                    if(groupService.participantWantsToShareThisCategory(category, participant) && participant.getSplitShare() > 0) {
+                    if (groupService.participantWantsToShareThisCategory(category, participant) && participant.getSplitShare() > 0) {
                         Double splitValue = calculateAmountShareForParticipant(participant, totals.getTotalAmount(), totals.getTotalShare());
                         double valueBalance = participant.getTotalSpentByCategory(category) - splitValue;
                         if (valueBalance != 0) {
@@ -80,7 +93,7 @@ public class SplitResultService {
 
     private Double calculateAmountShareForParticipant(Participant participant, double amountSum, double shareSum) {
         Double userShare = participant.getSplitShare();
-        return (userShare/shareSum) * amountSum;
+        return (userShare / shareSum) * amountSum;
     }
 
     public List<SplitResult> updateSplitResult(SplitGroup group) {
@@ -138,7 +151,7 @@ public class SplitResultService {
     @Transactional
     public ParticipantSplitGroupResponse updateSplitShare(Long participantId, Double splitShare, User currentUser) {
         Participant participant = participantService.findById(participantId);
-        if(currentUserIsParticipant(participant, currentUser)) {
+        if (currentUserIsParticipant(participant, currentUser)) {
             participant.setSplitShare(splitShare);
             participantRepository.save(participant);
             List<SplitResult> splitResults = updateSplitResult(participant.getSplitGroup());
@@ -146,7 +159,7 @@ public class SplitResultService {
             splitResults.forEach(sr -> {
                 splitResultResponses.add(new SplitResultResponse(sr));
             });
-            return new ParticipantSplitGroupResponse(new ParticipantResponse(participant),splitResultResponses);
+            return new ParticipantSplitGroupResponse(new ParticipantResponse(participant), splitResultResponses);
         } else {
             throw new RuntimeException("This user cannot change the share from another user.");
         }

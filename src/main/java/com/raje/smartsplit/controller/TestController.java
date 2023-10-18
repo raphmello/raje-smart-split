@@ -8,12 +8,15 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@CrossOrigin(origins = "*", maxAge = 3600)
+@CrossOrigin(origins = "*", maxAge = TestController.MAX_AGE)
 @RestController
 @RequestMapping("/api/test")
 @SecurityRequirement(name = "")
 @Tag(name = "Test ROLES")
 public class TestController {
+
+    public static final int MAX_AGE = 3600;
+
     @GetMapping("/all")
     public String allAccess() {
         return "Public Content.";

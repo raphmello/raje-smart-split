@@ -8,7 +8,13 @@ import lombok.Setter;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +37,7 @@ public class SplitGroup {
     @ManyToOne
     private User creator;
 
-    @OneToMany(mappedBy = "splitGroup",fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "splitGroup", fetch = FetchType.EAGER)
     @Fetch(FetchMode.SELECT)
     private List<Participant> participants = new ArrayList<>();
 
@@ -42,8 +48,9 @@ public class SplitGroup {
         Optional<Participant> first = this.participants.stream()
                 .filter(p -> p.equals(participant))
                 .findFirst();
-        if(first.isPresent())
+        if (first.isPresent()) {
             throw new UserAlreadyParticipantException();
+        }
 
         this.participants.add(participant);
     }
@@ -51,8 +58,9 @@ public class SplitGroup {
     public void removeParticipant(User user) {
         Participant participant = null;
         for (Participant p: participants) {
-            if(p.getUser().equals(user))
+            if (p.getUser().equals(user)) {
                 participant = p;
+            }
         }
         participants.remove(participant);
     }

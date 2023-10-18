@@ -12,9 +12,9 @@ import java.util.List;
 @Service
 public class SplitSimplificationResultService {
 
-    final private SplitSimplificationResultRepository repository;
-    final private UserService userService;
-    final private SplitResultService splitResultService;
+    private final SplitSimplificationResultRepository repository;
+    private final UserService userService;
+    private final SplitResultService splitResultService;
 
     public SplitSimplificationResultService(SplitSimplificationResultRepository repository, UserService userService, SplitResultService splitResultService) {
         this.repository = repository;
@@ -42,8 +42,9 @@ public class SplitSimplificationResultService {
                 for (int ii = 0; ii < numberParticipantsInGroup && amountBiggestDebtor > 0; ii++) {
                     DataDebtor smallestDebtor = biggestDebtors.get(ii);
 
-                    if (smallestDebtor.getUsername().equalsIgnoreCase(biggestDebtor.getUsername()))
+                    if (smallestDebtor.getUsername().equalsIgnoreCase(biggestDebtor.getUsername())) {
                         continue;
+                    }
 
                     Double amountSmallestDebtor = smallestDebtor.getAmountSum();
                     Double valorParaPagamento = 0.;
