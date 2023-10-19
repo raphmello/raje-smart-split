@@ -1,0 +1,21 @@
+# DOCKER COMPOSE FILE to RUN as a SERVICE on EC2 Instance
+services:
+  app:
+    image: raphmello/smartsplit:latest
+    restart: always
+    ports:
+      - 8080:8080
+    depends_on:
+      - db
+  db:
+    image: postgres
+    environment:
+      - POSTGRES_PASSWORD=1234
+      - POSTGRES_DB=postgres
+    restart: always
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+volumes:
+  db_data:
