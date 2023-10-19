@@ -39,8 +39,5 @@ jobs:
       - name: Remove docker container
         run: docker rm -f smartsplit
 
-      - name: Remove old images to save space
-        run: docker rmi $(docker images | grep 'raphmello/smartsplit')
-
       - name: Run docker container
         run: docker run -d -p 8080:8080 --name smartsplit raphmello/smartsplit
