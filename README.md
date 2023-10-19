@@ -4,7 +4,7 @@
   entre seus amigos e colegas de trabalho.
 
 # Funcionalidades aplicadas
-- Como forma de estudos diversas funcionalidades foram adicionadas
+A fim de praticar as funcionalidades abaixo foram adicionadas
 ### Checkstyle e PMD
 - Plugins de checkstyle e PDM fazem parte do build, quebrando o build caso alguma regra seja violada
 ### Autenticação com Google-Auth
